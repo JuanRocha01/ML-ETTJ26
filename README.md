@@ -1,6 +1,6 @@
 ﻿# ML-ETTJ26
 
-Seu primeiro projeto de Machine Learning.
+Utilizar ferramentas de Machine Learning para construir a Estrutura a Termo da Taxa de Juros Brasileira.
 
 ## Descrição
 [Descreva aqui o que seu projeto faz]

@@ -1,0 +1,11 @@
+bcb_rates:
+  type: pickle.PickleDataSet
+  filepath: data/01_raw/bcb/bcb_rates.pkl
+
+anbima_bonds_raw:
+  type: pandas.ParquetDataSet
+  filepath: data/01_raw/anbima/anbima_treasury_bonds_raw.parquet
+
+b3_di_futures_raw:
+  type: pandas.ParquetDataSet
+  filepath: data/01_raw/b3/b3_di_futures_raw.parquet

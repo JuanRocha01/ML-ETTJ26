@@ -1,0 +1,26 @@
+bcb:
+  start: "01/01/2015"
+  end: "31/12/2025"
+  timeout_sec: 30
+  max_retries: 4
+  backoff_sec: 1.0
+  series:
+    selic: 432
+    ipca: 433
+
+anbima:
+  timeout_sec: 30
+  max_retries: 4
+  backoff_sec: 1.0
+  sep: ";"
+  encoding: "latin-1"
+  url: "<COLE_AQUI_A_URL_DO_ARQUIVO_ANBIMA_QUE_VOCE_VAI_USAR>"
+
+b3_di:
+  timeout_sec: 30
+  max_retries: 4
+  backoff_sec: 1.0
+  sep: ";"
+  encoding: "latin-1"
+  file_type: "csv"
+  url: "<COLE_AQUI_A_URL_DO_ARQUIVO_B3_DI_FUTURO>"
