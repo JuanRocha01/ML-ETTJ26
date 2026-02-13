@@ -3,7 +3,7 @@ from datetime import date
 
 from ml_ettj26.utils.io.http import HTTPConfig, RequestsTransport
 from ml_ettj26.utils.io.storage import LocalFileStorage
-from ml_ettj26.extractors.bcb_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
+from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
 
 
 @pytest.mark.integration

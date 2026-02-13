@@ -1,6 +1,6 @@
 from ml_ettj26.utils.io.http import HTTPConfig, RequestsTransport
 from ml_ettj26.utils.io.storage import LocalFileStorage
-from ml_ettj26.extractors.bcb_raw import BcbSgsRawExtractor
+from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor
 
 def main():
     http = RequestsTransport(HTTPConfig(timeout_sec=60, max_retries=4, backoff_sec=1.0))

@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from ml_ettj26.utils.io.http import HTTPConfig, RequestsTransport
 from ml_ettj26.utils.io.storage import LocalFileStorage
-from ml_ettj26.extractors.bcb_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
+from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
 
 
 def extract_bcb_raw(params: Dict[str, Any]) -> Dict[str, Any]:

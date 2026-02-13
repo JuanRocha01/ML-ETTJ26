@@ -124,35 +124,3 @@ class BcbSgsRawExtractor:
             paths.append(self._fetch_once(series_id=series_id, start=s, end=e, out_path=chunk_path))
 
         return paths
-
-
-# ---------- BCB / DEMAB RAW extractor ----------
-class BcbDemabNegociacoesRawExtractor:
-    def __init__(self, transport: HttpTransport, storage: ByteStorage):
-        self.transport = transport
-        self.storage = storage
-
-    @staticmethod
-    def _yyyymm(d: date) -> str:
-        return f"{d.year:04d}{d.month:02d}"
-
-    def fetch_and_store_month(
-        self,
-        month: date,
-        tipo: str = "T",   # "T" todas; "E" extragrupo
-        out_path: Optional[str] = None,
-    ) -> str:
-        tipo = tipo.upper()
-        if tipo not in ("T", "E"):
-            raise ValueError("tipo deve ser 'T' ou 'E'.")
-
-        yyyymm = self._yyyymm(month)
-        url = f"https://www4.bcb.gov.br/pom/demab/negociacoes/download/Neg{tipo}{yyyymm}.ZIP"
-
-        r = self.transport.get(url)
-        r.raise_for_status()
-
-        if out_path is None:
-            out_path = f"bcb/demab/negociacoes/Neg{tipo}{yyyymm}.ZIP"
-
-        return self.storage.save(out_path, r.content)

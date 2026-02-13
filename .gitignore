@@ -30,6 +30,25 @@ venv/
 .venv/
 ENV/
 env/
+
+# Ambiente virtual
+venv/
+__pycache__/
+*.pyc
+
+# Dados brutos (raw lake)
+data/01_raw/
+
+# Opcional: outros estágios do data lake
+data/02_trusted/
+data/03_refined/
+
+# Logs
+*.log
+
+# Arquivos temporários
+.ipynb_checkpoints/
+
 ##########################################
 # Python cache
 ##########################################
