@@ -12,3 +12,11 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.kedro]
+project_name = "ML-ETTJ26"
+package_name = "ml_ettj26"
+kedro_init_version = "1.2.0"
+
+[tool.kedro_telemetry]
+project_id = "0be38d52ba2d4c14836aed3f35c8d191"

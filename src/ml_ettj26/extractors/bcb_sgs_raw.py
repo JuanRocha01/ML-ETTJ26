@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, Dict, Any, List, Protocol, Tuple
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import time
 
 from ml_ettj26.utils.io.http import HttpTransport
 from ml_ettj26.utils.io.storage import ByteStorage
@@ -18,7 +19,7 @@ class RangeSplitter(Protocol):
 
 class MaxYearsSplitter:
     """Divide um intervalo em janelas de no máximo N anos (inclusive)."""
-    def __init__(self, years: int = 10):
+    def __init__(self, years: int = 9):
         if years <= 0:
             raise ValueError("years deve ser > 0")
         self.years = years
@@ -69,7 +70,7 @@ class BcbSgsRawExtractor:
     ):
         self.transport = transport
         self.storage = storage
-        self.splitter = splitter or MaxYearsSplitter(years=10)
+        self.splitter = splitter or MaxYearsSplitter(years=9)
 
     def _fetch_once(
         self,
@@ -130,5 +131,6 @@ class BcbSgsRawExtractor:
             if out_dir:
                 chunk_path = f"{out_dir.rstrip('/')}/{series_id}_{s.replace('/','-')}_{e.replace('/','-')}.json"
             paths.append(self._fetch_once(series_id=series_id, start=s, end=e, out_path=chunk_path))
+            time.sleep(1)
 
         return paths

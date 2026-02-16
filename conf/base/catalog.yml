@@ -1,11 +1,6 @@
-bcb_rates:
-  type: pickle.PickleDataSet
-  filepath: data/01_raw/bcb/bcb_rates.pkl
+bcb_sgs_daily_trusted:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/bcb/sgs_daily/sgs_daily.parquet
+  save_args:
+    index: false
 
-anbima_bonds_raw:
-  type: pandas.ParquetDataSet
-  filepath: data/01_raw/anbima/anbima_treasury_bonds_raw.parquet
-
-b3_di_futures_raw:
-  type: pandas.ParquetDataSet
-  filepath: data/01_raw/b3/b3_di_futures_raw.parquet

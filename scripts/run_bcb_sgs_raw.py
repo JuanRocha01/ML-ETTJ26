@@ -7,7 +7,7 @@ def main():
     storage = LocalFileStorage("data/01_raw")
     sgs = BcbSgsRawExtractor(http, storage)
 
-    start = "01/01/2000"
+    start = "01/01/2018"
     end = "13/02/2026"
 
     selic_paths = sgs.fetch_and_store(432, start=start, end=end, out_dir="bcb/sgs")
@@ -17,6 +17,7 @@ def main():
     for p in selic_paths:
         print(" -", p)
 
+    
     print("IPCA:", len(ipca_paths), "arquivos")
     for p in ipca_paths:
         print(" -", p)
