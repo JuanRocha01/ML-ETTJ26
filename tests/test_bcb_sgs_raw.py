@@ -1,7 +1,7 @@
 import pytest
 from datetime import date
 
-from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
+from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor
 
 
 # ---------- fakes ----------
@@ -110,26 +110,3 @@ def test_sgs_http_error_raises():
     with pytest.raises(RuntimeError):
         extractor.fetch_and_store(series_id=433, start="01/01/2020", end="31/12/2020")
 
-
-# ---------- tests DEMAB ----------
-def test_demab_fetch_and_store_month_builds_url_and_saves_zip():
-    fake_zip = b"PK\x03\x04...."
-    transport = FakeTransport(FakeResponse(fake_zip))
-    storage = MemoryStorage()
-
-    extractor = BcbDemabNegociacoesRawExtractor(transport, storage)
-
-    out_path = extractor.fetch_and_store_month(month=date(2024, 1, 1), tipo="T")
-
-    assert transport.last_url == "https://www4.bcb.gov.br/pom/demab/negociacoes/download/NegT202401.ZIP"
-    assert out_path == "bcb/demab/negociacoes/NegT202401.ZIP"
-    assert storage.saved[out_path] == fake_zip
-
-
-def test_demab_invalid_tipo_raises():
-    transport = FakeTransport(FakeResponse(b"x"))
-    storage = MemoryStorage()
-    extractor = BcbDemabNegociacoesRawExtractor(transport, storage)
-
-    with pytest.raises(ValueError):
-        extractor.fetch_and_store_month(month=date(2024, 1, 1), tipo="Z")

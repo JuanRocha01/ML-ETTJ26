@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional, Dict, Any, List, Protocol, Tuple
-from datetime import date, datetime
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from ml_ettj26.utils.io.http import HttpTransport
@@ -78,6 +78,14 @@ class BcbSgsRawExtractor:
         end: Optional[str] = None,
         out_path: Optional[str] = None,
     ) -> str:
+        
+        """
+        Faz uma única requisição à API BCB/SGS e salva o resultado.
+        
+        Responsabilidade: busca + armazenamento (não orquestração).
+        Privado porque a orquestração de múltiplas janelas fica em fetch_and_store().
+        """
+
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{series_id}/dados"
         params: Dict[str, Any] = {"formato": "json"}
         if start:

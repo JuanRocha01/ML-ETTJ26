@@ -3,7 +3,7 @@ from datetime import date
 
 from ml_ettj26.utils.io.http import HTTPConfig, RequestsTransport
 from ml_ettj26.utils.io.storage import LocalFileStorage
-from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor, BcbDemabNegociacoesRawExtractor
+from ml_ettj26.extractors.bcb_sgs_raw import BcbSgsRawExtractor
 
 
 @pytest.mark.integration
@@ -47,22 +47,3 @@ def test_integration_bcb_sgs_selic_long_range_creates_multiple_files(tmp_path):
         assert p.exists()
         content = p.read_bytes()
         assert content.lstrip().startswith(b"[")
-
-
-@pytest.mark.integration
-def test_integration_bcb_demab_one_month_downloads_zip(tmp_path):
-    # Arrange
-    transport = RequestsTransport(HTTPConfig(timeout_sec=30, max_retries=2, backoff_sec=0.5))
-    storage = LocalFileStorage(str(tmp_path))
-    extractor = BcbDemabNegociacoesRawExtractor(transport, storage)
-
-    # Act
-    out_path = extractor.fetch_and_store_month(month=date(2024, 1, 1), tipo="T")
-
-    # Assert
-    p = tmp_path / out_path
-    assert p.exists()
-    content = p.read_bytes()
-    # ZIP começa com PK
-    assert content[:2] == b"PK"
-    assert len(content) > 1000  # evita falso positivo com HTML curto

@@ -42,7 +42,8 @@ data/01_raw/
 # Opcional: outros estágios do data lake
 data/02_trusted/
 data/03_refined/
-
+data/b3/
+data
 # Logs
 *.log
 

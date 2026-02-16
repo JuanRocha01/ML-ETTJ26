@@ -15,6 +15,14 @@ class HttpTransport(Protocol):
         headers: Optional[Dict[str, str]] = None,
     ) -> requests.Response: ...
 
+    def post(
+        self,
+        url: str,
+        data: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> requests.Response: ...
+    
+
 
 @dataclass(frozen=True)
 class HTTPConfig:
@@ -32,7 +40,7 @@ class RequestsTransport:
             total=cfg.max_retries,
             backoff_factor=cfg.backoff_sec,
             status_forcelist=(429, 500, 502, 503, 504),
-            allowed_methods=("GET",),
+            allowed_methods=("GET","POST",),
         )
         adapter = HTTPAdapter(max_retries=retries)
         session.mount("https://", adapter)
@@ -47,3 +55,13 @@ class RequestsTransport:
     ) -> requests.Response:
         h = headers or self.cfg.headers
         return self.session.get(url, params=params, headers=h, timeout=self.cfg.timeout_sec)
+    
+    def post(
+    self,
+    url: str,
+    data: Optional[Dict[str, Any]] = None,
+    headers: Optional[Dict[str, str]] = None,
+    ) -> requests.Response:
+        h = headers or self.cfg.headers
+        return self.session.post(url, data=data, headers=h, timeout=self.cfg.timeout_sec)
+
