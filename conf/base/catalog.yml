@@ -1,6 +1,11 @@
-bcb_sgs_daily_trusted:
+bcb_sgs_series_meta_trusted:
   type: pandas.ParquetDataset
-  filepath: data/02_trusted/bcb/sgs_daily/sgs_daily.parquet
+  filepath: data/02_trusted/bcb/sgs/series_meta.parquet
   save_args:
     index: false
 
+bcb_sgs_points_trusted:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/bcb/sgs/points.parquet
+  save_args:
+    index: false

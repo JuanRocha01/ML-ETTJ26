@@ -1,5 +1,13 @@
 bcb_sgs:
   raw_dir: "data/01_raw/bcb/sgs"
   source: "BCB_SGS"
-  frequency: "D"
+  series_meta:
+    432:
+      name: "SELIC"
+      frequency: "D"
+      unit: "% a.a."
+    433:
+      name: "IPCA"
+      frequency: "M"
+      unit: "%"
 
