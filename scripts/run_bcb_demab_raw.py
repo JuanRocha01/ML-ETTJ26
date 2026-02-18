@@ -64,7 +64,7 @@ def _download_tipo(extractor: DemabMonthlyRawExtractor, tipo: str, start: date, 
 
 
 def main():
-    print("Iniciando extração DEMAB Negociações (T e E) de 01/2007 até 01/2026")
+    print("Iniciando extração DEMAB Negociações (T e/ou E) de 01/2007 até 01/2026")
     print(f"RAW_BASE_DIR: {RAW_BASE_DIR.resolve()}")
     print(f"OUT_DIR: {OUT_DIR}")
     print(f"OVERWRITE: {OVERWRITE}\n")
@@ -86,12 +86,12 @@ def main():
     start = date(2007, 1, 1)
     end = date(2026, 1, 1)
 
-    # Extrai os dois tipos
-    downloaded_t = _download_tipo(extractor, tipo="T", start=start, end=end)
+    # Extrai os dois tipos SEGUNDO BCB
+    #downloaded_t = _download_tipo(extractor, tipo="T", start=start, end=end)
     downloaded_e = _download_tipo(extractor, tipo="E", start=start, end=end)
 
     print("\nConcluído!")
-    print(f"Total T baixados agora: {len(downloaded_t)}")
+    #print(f"Total T baixados agora: {len(downloaded_t)}")
     print(f"Total E baixados agora: {len(downloaded_e)}")
 
 

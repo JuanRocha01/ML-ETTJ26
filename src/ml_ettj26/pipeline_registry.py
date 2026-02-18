@@ -4,14 +4,22 @@ from __future__ import annotations
 from kedro.pipeline import Pipeline
 
 from ml_ettj26.pipelines.trusted.bcb_sgs.pipeline import create_pipeline as bcb_sgs_trusted
+from ml_ettj26.pipelines.trusted.bcb_demab.pipeline import create_pipeline as demab_trusted
 
 
 def register_pipelines() -> dict[str, Pipeline]:
+    trusted_bcb_sgs = bcb_sgs_trusted()
+    trusted_bcb_demab = demab_trusted()
+
+    trusted_all = trusted_bcb_sgs + trusted_bcb_demab
+
     pipelines = {
-        "trusted_bcb_sgs": bcb_sgs_trusted(),
+        "trusted_bcb_sgs": trusted_bcb_sgs,
+        "trusted_bcb_demab": trusted_bcb_demab,
+        "trusted_all": trusted_all,
     }
 
     # você pode definir o default
-    pipelines["__default__"] = pipelines["trusted_bcb_sgs"]
+    pipelines["__default__"] = pipelines["trusted_all"]
 
     return pipelines

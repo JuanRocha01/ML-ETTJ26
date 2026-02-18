@@ -9,3 +9,19 @@ bcb_sgs_points_trusted:
   filepath: data/02_trusted/bcb/sgs/points.parquet
   save_args:
     index: false
+
+bcb_demab_instruments_trusted:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/bcb/demab/instruments.parquet
+  save_args: { index: false }
+
+bcb_demab_quotes_daily_trusted:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/02_trusted/bcb/demab/quotes_daily
+  filename_suffix: ".parquet"
+  dataset:
+    type: pandas.ParquetDataset
+    save_args:
+      index: false
+    load_args:
+      engine: pyarrow

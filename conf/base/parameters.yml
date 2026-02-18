@@ -11,3 +11,7 @@ bcb_sgs:
       frequency: "M"
       unit: "%"
 
+bcb_demab:
+  raw_dir: "data/01_raw/bcb/demab/negociacoes_titulos_federais_secundario"
+  source: "BCB_DEMAB"
+  zip_prefix: "NegE"
