@@ -5,8 +5,8 @@ from typing import Optional
 
 import pandas as pd
 
-from ml_ettj26.domain.demab.models import DemabInstrument, DemabQuoteDaily
-from ml_ettj26.domain.demab.hashing import make_record_hash
+from ml_ettj26.domain.bcb_demab.models import DemabInstrument, DemabQuoteDaily
+from ml_ettj26.domain.bcb_demab.hashing import make_record_hash
 
 
 EXPECTED_MAP = {

@@ -4,8 +4,8 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from typing import Iterable, List, Optional
 
-from ml_ettj26.domain.sgs.models import SgsPoint
-from ml_ettj26.domain.sgs.hashing import make_record_hash
+from ml_ettj26.domain.bcb_sgs.models import SgsPoint
+from ml_ettj26.domain.bcb_sgs.hashing import make_record_hash
 
 
 def _parse_ptbr_date(s: str) -> "datetime.date":

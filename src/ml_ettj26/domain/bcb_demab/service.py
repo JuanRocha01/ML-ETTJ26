@@ -8,9 +8,9 @@ import pandas as pd
 import re
 
 from ml_ettj26.utils.io.fs import file_sha256
-from ml_ettj26.domain.demab.zip_reader import get_single_csv_name, open_csv_stream
-from ml_ettj26.domain.demab.parsing import read_demab_csv
-from ml_ettj26.domain.demab.normalize import normalize_demab_df, row_to_instrument, row_to_quote
+from ml_ettj26.domain.bcb_demab.zip_reader import get_single_csv_name, open_csv_stream
+from ml_ettj26.domain.bcb_demab.parsing import read_demab_csv
+from ml_ettj26.domain.bcb_demab.normalize import normalize_demab_df, row_to_instrument, row_to_quote
 
 
 @dataclass(frozen=True)

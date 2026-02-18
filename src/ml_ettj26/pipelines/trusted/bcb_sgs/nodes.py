@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any, Mapping
 import pandas as pd
 
-from ml_ettj26.domain.sgs.meta import parse_series_meta
-from ml_ettj26.domain.sgs.service import SgsIngestConfig, SgsTrustedBuilder
-from ml_ettj26.domain.sgs.validate import (
+from ml_ettj26.domain.bcb_sgs.meta import parse_series_meta
+from ml_ettj26.domain.bcb_sgs.service import SgsIngestConfig, SgsTrustedBuilder
+from ml_ettj26.domain.bcb_sgs.validate import (
     validate_sgs_points,
     validate_sgs_series_meta,
 )

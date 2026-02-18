@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Any, Mapping
 import pandas as pd
 
-from ml_ettj26.domain.demab.service import DemabIngestConfig, DemabTrustedBuilder
-from ml_ettj26.domain.demab.validate import validate_demab_instruments, validate_demab_quotes
+from ml_ettj26.domain.bcb_demab.service import DemabIngestConfig, DemabTrustedBuilder
+from ml_ettj26.domain.bcb_demab.validate import validate_demab_instruments, validate_demab_quotes
 
 def build_demab_instruments(params: Mapping[str, Any]) -> pd.DataFrame:
     cfg = DemabIngestConfig(raw_dir=params["raw_dir"], source=params.get("source","BCB_DEMAB"))

@@ -7,9 +7,9 @@ from typing import Dict
 
 import pandas as pd
 
-from ml_ettj26.domain.sgs.models import SgsSeriesMeta
-from ml_ettj26.domain.sgs.parsing import parse_series_id_from_filename, read_sgs_json
-from ml_ettj26.domain.sgs.normalize import normalize_sgs_records
+from ml_ettj26.domain.bcb_sgs.models import SgsSeriesMeta
+from ml_ettj26.domain.bcb_sgs.parsing import parse_series_id_from_filename, read_sgs_json
+from ml_ettj26.domain.bcb_sgs.normalize import normalize_sgs_records
 from ml_ettj26.utils.io.fs import file_sha256
 
 

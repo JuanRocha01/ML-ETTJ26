@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping
 
-from ml_ettj26.domain.sgs.models import SgsSeriesMeta
+from ml_ettj26.domain.bcb_sgs.models import SgsSeriesMeta
 
 
 def parse_series_meta(series_meta_raw: Mapping[Any, Any], default_source: str) -> Dict[int, SgsSeriesMeta]:
