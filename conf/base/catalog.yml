@@ -1,3 +1,26 @@
+raw_anbima_holidays:
+  type: pandas.CSVDataset
+  filepath: data/calendars/01_raw/feriados_nacionais(Feriados).csv
+  load_args:
+    sep: ";"
+    encoding: "utf-8"
+
+trusted_ref_anbima_holidays:
+  type: pandas.ParquetDataset
+  filepath: data/calendars/02_trusted/ref/anbima_holidays.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
+
+trusted_ref_calendar_bd_index:
+  type: pandas.ParquetDataset
+  filepath: data/calendars/02_trusted/ref/calendar_bd_index.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
+
 bcb_sgs_series_meta_trusted:
   type: pandas.ParquetDataset
   filepath: data/02_trusted/bcb/sgs/series_meta.parquet
@@ -13,7 +36,8 @@ bcb_sgs_points_trusted:
 bcb_demab_instruments_trusted:
   type: pandas.ParquetDataset
   filepath: data/02_trusted/bcb/demab/instruments.parquet
-  save_args: { index: false }
+  save_args: 
+    index: false 
 
 bcb_demab_quotes_daily_trusted:
   type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset

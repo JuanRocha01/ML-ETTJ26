@@ -1,7 +1,8 @@
 from kedro.pipeline import Pipeline, node
-from ml_ettj26.pipelines.trusted.bcb_demab.nodes import (build_demab_instruments, build_demab_quotes,
-                                                          validate_instruments, validate_quotes,
-                                                           build_demab_quotes_partitioned, validate_demab_quotes_partitioned)
+from ml_ettj26.pipelines.trusted.bcb_demab.nodes import (build_demab_instruments,
+                                                         validate_instruments,
+                                                         build_demab_quotes_partitioned, 
+                                                         validate_demab_quotes_partitioned)
 
 def create_pipeline(**kwargs) -> Pipeline:
     return Pipeline(
