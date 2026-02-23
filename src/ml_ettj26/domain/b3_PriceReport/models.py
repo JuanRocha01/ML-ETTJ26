@@ -1,52 +1,54 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
-from decimal import Decimal
+from datetime import datetime
 from typing import Optional
 
 @dataclass(frozen=True)
-class PriceReportDerivative:
-    # PK
-    ticker: str
+class DI1QuotesDaily:
+    # Chave Primária
+    TradDt : datetime
+    TckrSymb : str
+    snapshot_ts_utc: datetime
 
-    contract_code: str
+    AdjstdQtTax : float #taxa
+    AdjstdQt : float    #pu
+    
 
-    type: str
-    exchange: str
-    month_code: str
-    year_code: str
-    maturity_month: date
-    maturity_date: date
-    source: str = "B3_PRICE_REPORT"
+    # Info para futuros projetos
+    BestBidPric: Optional[float]
+    BestAskPric: Optional[float]
+    LastPric: Optional[float]
+    TradAvrgPric: Optional[float]
+    MinPric: Optional[float]
+    MaxPric: Optional[float]
+
+    TradQty: Optional[int]
+    FinInstrmQty: Optional[int]
+    OpnIntrst: Optional[int]
+
+    # Auditoria & Governança
+    lineage_id : str # FK
+    ingestion_ts_utc: datetime
 
 @dataclass(frozen=True)
-class ContractSpecification:
+class InstrumentMaster:
     # PK
-    contract_code: str
+    TckrSymb : str
 
-    currency: str = 'BRL'
-    day_count_convention: str = 'BUS/252'
-    roll_rule: str = '1st BUSINESS_DAY'
-    price_quote_convention: str = 'PU'
-    contract_size: Optional[int] = None
+    asset: str
+    contract_month_code: str
+    contract_year: int
+    maturity_date: datetime
 
 @dataclass(frozen=True)
-class PriceReportQuoteDaily:
+class DataLineage:
     # PK
-    trade_date: date
-    ticker: str
+    lineage_id : str # outer_zip|inner_zip|xml_name|snapshot_ts_utc|hash_file
 
-    adjstd_val_ctrct: Optional[Decimal]
-    min_price: Optional[float]
-    max_price: Optional[float]
-    last_price: Optional[float]
-    avg_price: Optional[float]
-
-    trade_qnty: Optional[int]
-    opn_intrst: Optional[int]
-    oscn_pctg: Optional[float]
-    vartn_pts: Optional[float]
-
-    file_hash: str
-    ingestion_ts_utc: str
+    outer_zip: str
+    inner_zip: str
+    xml_name: str
+    snapshot_ts_utc : str
+    hash_file: str
+    ingestion_ts_utc : datetime

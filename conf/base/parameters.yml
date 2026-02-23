@@ -22,3 +22,11 @@ bcb_demab:
   raw_dir: "data/01_raw/bcb/demab/negociacoes_titulos_federais_secundario"
   source: "BCB_DEMAB"
   zip_prefix: "NegE"
+
+b3_di1_range:
+  start_month: "2026-02"
+  end_month: "2026-02"
+
+b3_price_report:
+  head_bytes: 64000
+

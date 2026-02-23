@@ -28,7 +28,7 @@ def build_anbima_holidays_trusted(
     name_col = "Feriado"
 
     # parse date (ANBIMA normalmente é dd/mm/yyyy)
-    df["date"] = pd.to_datetime(df[date_col], dayfirst=True, errors="coerce").dt.date
+    df["date"] = pd.to_datetime(df[date_col], dayfirst=True, errors="coerce", utc=True).dt.date
     df = df.dropna(subset=["date"]).copy()
 
     df["holiday_name"] = df[name_col].astype(str).str.strip()
@@ -48,6 +48,13 @@ def build_anbima_holidays_trusted(
     )
 
     df.insert(0, "cal_id", cal_id)
+    df["date"] = pd.to_datetime(
+        df["date"],
+        dayfirst=True,
+        errors="coerce",
+        utc=True
+        )
+
     df["ingestion_ts_utc"] = ingestion_ts_utc
     df["source_file_hash"] = source_file_hash
     df["pipeline_run_id"] = pipeline_run_id
@@ -77,9 +84,9 @@ def build_calendar_bd_index_trusted(
     holiday_map = {}
     if not holidays_trusted.empty:
         holiday_map = dict(zip(holidays_trusted["date"], holidays_trusted["holiday_name"]))
-
-    dates = pd.date_range(min_date, max_date, freq="D")
-    out = pd.DataFrame({"date": dates.date})
+            
+    dates = pd.date_range(min_date, max_date, freq="D", tz="UTC")
+    out = pd.DataFrame({"date": dates})
     out.insert(0, "cal_id", cal_id)
     out["weekday"] = pd.to_datetime(out["date"]).dt.weekday
 

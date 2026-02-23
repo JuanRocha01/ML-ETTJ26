@@ -4,6 +4,11 @@ raw_anbima_holidays:
   load_args:
     sep: ";"
     encoding: "utf-8"
+  
+raw_b3_price_report_zip_paths:
+  type: ml_ettj26.io.datasets.daily_zip_paths.DailyZipPathsDataset
+  folder: data/01_raw/b3/PriceReport
+  glob_pattern: "*.zip"
 
 trusted_ref_anbima_holidays:
   type: pandas.ParquetDataset
@@ -20,6 +25,29 @@ trusted_ref_calendar_bd_index:
     index: false
   load_args:
     engine: pyarrow
+
+trusted_b3_di1_instrument_master:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/b3/di1_instrument_master.parquet
+
+trusted_b3_di1_instrument_master_prev:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/b3/di1_instrument_master.parquet
+
+trusted_b3_di1_quotes_daily_by_month:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/02_trusted/b3/di1_quotes_daily
+  dataset:
+    type: pandas.ParquetDataset
+  filename_suffix: ".parquet"
+
+trusted_b3_di1_lineage_by_month:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/02_trusted/b3/di1_lineage
+  dataset:
+    type: pandas.ParquetDataset
+  filename_suffix: ".parquet"
+
 
 bcb_sgs_series_meta_trusted:
   type: pandas.ParquetDataset
