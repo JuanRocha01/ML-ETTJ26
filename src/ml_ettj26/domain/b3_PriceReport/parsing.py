@@ -25,6 +25,13 @@ class LatestXmlPick:
     snapshot_dt: Optional[datetime]
     method: str  # "header_ts" | "name_suffix" | "lexicographic"
 
+
+@dataclass(frozen=True)
+class XmlCandidate:
+    xml_name: str
+    snapshot_dt: Optional[datetime]
+    suffix: Optional[int]
+
 def trailing_int_from_xml_name(name: str) -> Optional[int]:
     m = _RE_TRAILING_INT_XML.search(name)
     return int(m.group(1)) if m else None
@@ -39,33 +46,51 @@ def pick_latest_xml(
     *,
     head_bytes: int = 64_000,
 ) -> LatestXmlPick:
+    ranked = rank_xml_candidates(zi, xml_names, head_bytes=head_bytes)
+    first = ranked[0]
+    if first.snapshot_dt is not None:
+        return LatestXmlPick(xml_name=first.xml_name, snapshot_dt=first.snapshot_dt, method="header_ts")
+    if first.suffix is not None:
+        return LatestXmlPick(xml_name=first.xml_name, snapshot_dt=None, method="name_suffix")
+    return LatestXmlPick(xml_name=first.xml_name, snapshot_dt=None, method="lexicographic")
+
+
+def rank_xml_candidates(
+    zi: zipfile.ZipFile,
+    xml_names: list[str],
+    *,
+    head_bytes: int = 64_000,
+) -> list[XmlCandidate]:
+    """
+    Rankea XMLs por "mais recente" para fallback:
+      1) snapshot_ts do header (desc)
+      2) sufixo inteiro no nome (desc)
+      3) nome lexicografico (desc)
+    """
     if not xml_names:
         raise ValueError("xml_names vazio")
 
-    best_dt: Optional[tuple[datetime, str]] = None
-    best_suffix: Optional[tuple[int, str]] = None
-    best_lex = max(xml_names)
-
+    candidates: list[XmlCandidate] = []
     for name in xml_names:
-        suf = trailing_int_from_xml_name(name)
-        if suf is not None and (best_suffix is None or suf > best_suffix[0]):
-            best_suffix = (suf, name)
-
         head = _read_head(zi, name, head_bytes=head_bytes)
-        dt = parse_snapshot_ts_from_head(head)
+        candidates.append(
+            XmlCandidate(
+                xml_name=name,
+                snapshot_dt=parse_snapshot_ts_from_head(head),
+                suffix=trailing_int_from_xml_name(name),
+            )
+        )
 
-        if dt is not None and (best_dt is None or dt > best_dt[0]):
-            best_dt = (dt, name)
+    def _sort_key(c: XmlCandidate):
+        return (
+            c.snapshot_dt is not None,
+            c.snapshot_dt or datetime.min.replace(tzinfo=timezone.utc),
+            c.suffix is not None,
+            c.suffix or -1,
+            c.xml_name,
+        )
 
-    if best_dt is not None:
-        dt, name = best_dt
-        return LatestXmlPick(xml_name=name, snapshot_dt=dt, method="header_ts")
-
-    if best_suffix is not None:
-        _, name = best_suffix
-        return LatestXmlPick(xml_name=name, snapshot_dt=None, method="name_suffix")
-
-    return LatestXmlPick(xml_name=best_lex, snapshot_dt=None, method="lexicographic")
+    return sorted(candidates, key=_sort_key, reverse=True)
 
 
 # ----------------------------
