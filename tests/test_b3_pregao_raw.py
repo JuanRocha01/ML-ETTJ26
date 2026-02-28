@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import io
+import zipfile
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -77,6 +79,13 @@ def _make_project_root(tmp_path: Path) -> Path:
     return tmp_path
 
 
+def _build_valid_zip_bytes(filename: str = "payload.txt", payload: bytes = b"ok") -> bytes:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr(filename, payload)
+    return buf.getvalue()
+
+
 def test_default_out_path_points_to_project_data_root(tmp_path: Path):
     root = _make_project_root(tmp_path)
 
@@ -99,9 +108,10 @@ def test_fetch_once_success_saves_bytes(tmp_path: Path):
 
     d = date(2021, 3, 2)
     filelist = PRICE_REPORT.build_filelist_param(d)
+    zip_bytes = _build_valid_zip_bytes()
 
     transport = FakeHttpTransport(by_filelist={
-        filelist: FakeResponse(status_code=200, content=b"ZIPBYTES"),
+        filelist: FakeResponse(status_code=200, content=zip_bytes),
     })
     storage = FakeByteStorage()
 
@@ -112,7 +122,7 @@ def test_fetch_once_success_saves_bytes(tmp_path: Path):
     assert len(storage.saved) == 1
 
     path, content = storage.saved[0]
-    assert content == b"ZIPBYTES"
+    assert content == zip_bytes
     expected = root / "data" / "01_raw" / "b3" / "PriceReport" / "PR210302_20210302.zip"
     assert Path(path) == expected
 
@@ -161,12 +171,13 @@ def test_fetch_and_store_range_skips_missing_days(tmp_path: Path):
     # 2020-02-13 existe, 2020-02-14 não existe (simulado)
     d1 = date(2020, 2, 13)
     d2 = date(2020, 2, 14)
+    zip_bytes = _build_valid_zip_bytes()
 
     f1 = SWAP_MARKET_RATES.build_filelist_param(d1)
     f2 = SWAP_MARKET_RATES.build_filelist_param(d2)
 
     transport = FakeHttpTransport(by_filelist={
-        f1: FakeResponse(status_code=200, content=b"A"),
+        f1: FakeResponse(status_code=200, content=zip_bytes),
         f2: FakeResponse(status_code=404, content=b""),
     })
     storage = FakeByteStorage()
@@ -176,7 +187,7 @@ def test_fetch_and_store_range_skips_missing_days(tmp_path: Path):
 
     assert len(paths) == 1
     assert len(storage.saved) == 1
-    assert storage.saved[0][1] == b"A"
+    assert storage.saved[0][1] == zip_bytes
 
 
 def test_fetch_and_store_invalid_params_raise(tmp_path: Path):

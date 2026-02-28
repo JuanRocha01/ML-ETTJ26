@@ -1,17 +1,38 @@
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "ml-ettj26"
 version = "0.1.0"
-requires-python = ">=3.10"
+description = "ML-ETTJ26 Kedro project"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chardet<6",
+    "fastparquet>=2024.0,<2026.0",
+    "kedro==1.2.0",
+    "kedro-datasets==9.2.0",
+    "numpy>=2.0,<3.0",
+    "pandas>=3.0,<4.0",
+    "pyarrow>=16,<17",
+    "requests>=2.32,<3",
+    "urllib3>=2.0,<2.3",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["ml_ettj26*"]
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q -ra"
+testpaths = ["tests"]
+markers = [
+  "integration: integration tests",
+]
 
 [tool.kedro]
 project_name = "ML-ETTJ26"
@@ -20,3 +41,13 @@ kedro_init_version = "1.2.0"
 
 [tool.kedro_telemetry]
 project_id = "0be38d52ba2d4c14836aed3f35c8d191"
+
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6,<8",
+    "ipython>=8,<10",
+    "playwright>=1.45,<2",
+    "pytest>=8,<10",
+]
