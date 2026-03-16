@@ -48,6 +48,20 @@ trusted_b3_di1_lineage_by_month:
     type: pandas.ParquetDataset
   filename_suffix: ".parquet"
 
+trusted_b3_swap_dixpre_partitioned:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/02_trusted/b3/swaps/swap_dixpre
+  dataset:
+    type: pandas.ParquetDataset
+  filename_suffix: ".parquet"
+
+trusted_b3_swap_master:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/b3/swaps/swap_master.parquet
+
+trusted_b3_swap_data_lineage:
+  type: pandas.ParquetDataset
+  filepath: data/02_trusted/b3/swaps/data_lineage.parquet
 
 bcb_sgs_series_meta_trusted:
   type: pandas.ParquetDataset
