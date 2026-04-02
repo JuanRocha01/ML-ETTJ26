@@ -40,7 +40,7 @@ class SwapMaster:
 @dataclass(frozen=True)
 class DataLineage:
     # PK
-    lineage_id : str # outer_zip|inner_zip|txt_name|snapshot_ts_utc|hash_file
+    lineage_id : str # sha256 hex de outer_zip|inner_zip|txt_name|hash_file
 
     outer_zip: str
     inner_zip: str

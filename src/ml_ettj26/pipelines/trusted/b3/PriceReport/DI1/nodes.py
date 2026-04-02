@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Dict, Tuple
-from datetime import date
 import pandas as pd
 
 from ml_ettj26.domain.b3_PriceReport.service import build_b3_di1_trusted_month
@@ -29,23 +28,21 @@ def build_b3_di1_range_node(
 ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, pd.DataFrame], pd.DataFrame]:
     """
     Outputs:
-      - quotes_by_month: {"YYYY-MM": df, ...}  -> PartitionedDataset
-      - lineage_by_month: {"YYYY-MM": df, ...} -> PartitionedDataset
+      - quotes_daily: {"YYYY-MM-DD": df, ...}  -> PartitionedDataset
+      - lineage_daily: {"YYYY-MM-DD": df, ...} -> PartitionedDataset
       - instrument_master_updated_df: df (GLOBAL)
     """
     start_month = b3_di1_range["start_month"]
     end_month = b3_di1_range["end_month"]
     head_bytes = int(b3_price_report.get("head_bytes", 64000))
 
-    quotes_by_month: Dict[str, pd.DataFrame] = {}
-    lineage_by_month: Dict[str, pd.DataFrame] = {}
+    quotes_daily: Dict[str, pd.DataFrame] = {}
+    lineage_daily: Dict[str, pd.DataFrame] = {}
 
     # vai sendo atualizado mês a mês
     instr_df = trusted_b3_di1_instrument_master
 
     for year, month in _iter_months(start_month, end_month):
-        key = f"{year:04d}-{month:02d}"
-
         quotes_df, lineage_df, instr_df = build_b3_di1_trusted_month(
             raw_zip_paths=raw_b3_price_report_zip_paths,
             bd_index_df=trusted_ref_calendar_bd_index,
@@ -55,7 +52,24 @@ def build_b3_di1_range_node(
             previous_instrument_master_df=instr_df,  # acumulando global
         )
 
-        quotes_by_month[key] = quotes_df
-        lineage_by_month[key] = lineage_df
+        if not quotes_df.empty:
+            trade_dates = sorted(
+                pd.to_datetime(quotes_df["TradDt"], utc=True).dt.strftime("%Y-%m-%d").unique()
+            )
+            for trade_date in trade_dates:
+                quotes_daily[trade_date] = quotes_df[
+                    pd.to_datetime(quotes_df["TradDt"], utc=True).dt.strftime("%Y-%m-%d") == trade_date
+                ].copy()
 
-    return quotes_by_month, lineage_by_month, instr_df
+        if not lineage_df.empty and not quotes_df.empty:
+            lineage_by_id = lineage_df.set_index("lineage_id", drop=False)
+            quote_dates = (
+                quotes_df[["lineage_id", "TradDt"]]
+                .assign(trade_date=pd.to_datetime(quotes_df["TradDt"], utc=True).dt.strftime("%Y-%m-%d"))
+                [["lineage_id", "trade_date"]]
+                .drop_duplicates()
+            )
+            for trade_date, ids_df in quote_dates.groupby("trade_date", sort=True):
+                lineage_daily[trade_date] = lineage_by_id.loc[ids_df["lineage_id"]].reset_index(drop=True).copy()
+
+    return quotes_daily, lineage_daily, instr_df

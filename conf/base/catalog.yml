@@ -28,22 +28,23 @@ trusted_ref_calendar_bd_index:
 
 trusted_b3_di1_instrument_master:
   type: pandas.ParquetDataset
-  filepath: data/02_trusted/b3/di1_instrument_master.parquet
+  filepath: data/02_trusted/b3/forwards/di1_instrument_master.parquet
 
 trusted_b3_di1_instrument_master_prev:
-  type: pandas.ParquetDataset
-  filepath: data/02_trusted/b3/di1_instrument_master.parquet
+  type: ml_ettj26.io.datasets.safe_parquet.SafeParquetDataset
+  filepath: data/02_trusted/b3/forwards/di1_instrument_master.parquet
+  fallback_filepath: data/02_trusted/b3/di1_instrument_master.parquet
 
-trusted_b3_di1_quotes_daily_by_month:
+trusted_b3_di1_quotes_daily:
   type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
-  path: data/02_trusted/b3/di1_quotes_daily
+  path: data/02_trusted/b3/forwards/di1_quotes_daily
   dataset:
     type: pandas.ParquetDataset
   filename_suffix: ".parquet"
 
-trusted_b3_di1_lineage_by_month:
+trusted_b3_di1_lineage_daily:
   type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
-  path: data/02_trusted/b3/di1_lineage
+  path: data/02_trusted/b3/forwards/di1_lineage
   dataset:
     type: pandas.ParquetDataset
   filename_suffix: ".parquet"

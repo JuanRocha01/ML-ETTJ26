@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from ml_ettj26.utils.io.hash import sha256_hex
+
 
 def parse_yyyymmdd(value: str) -> datetime:
     return datetime.strptime(value, "%Y%m%d")
@@ -33,7 +35,8 @@ def make_lineage_id(
     txt_name: str,
     hash_file: str,
 ) -> str:
-    return f"{outer_zip}|{inner_zip}|{txt_name}|{hash_file}"
+    payload = f"{outer_zip}|{inner_zip}|{txt_name}|{hash_file}"
+    return sha256_hex(payload)
 
 def parse_adjusted_value(raw_value: str, signal: str, scale: int = 10_000) -> float:
     raw_int = parse_int(raw_value)

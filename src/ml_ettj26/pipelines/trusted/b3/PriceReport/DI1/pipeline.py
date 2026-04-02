@@ -14,8 +14,8 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "params:b3_price_report",
                 ],
                 outputs=[
-                    "trusted_b3_di1_quotes_daily_by_month",
-                    "trusted_b3_di1_lineage_by_month",
+                    "trusted_b3_di1_quotes_daily",
+                    "trusted_b3_di1_lineage_daily",
                     "trusted_b3_di1_instrument_master",
                 ],
                 name="trusted_build_b3_di1_range",

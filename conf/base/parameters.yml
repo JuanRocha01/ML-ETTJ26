@@ -24,16 +24,16 @@ bcb_demab:
   zip_prefix: "NegE"
 
 b3_di1_range:
-  start_month: "2026-02"
-  end_month: "2026-02"
+  start_month: "2024-01"
+  end_month: "2026-01"
 
 b3_price_report:
   head_bytes: 64000
 
 b3_swap:
   raw_dir: "data/01_raw/b3/DerivativesMarket-SwapMarketRates"
-  start_date: "2020-01-02"
-  end_date: "2022-12-31"
+  start_date: "2026-01-02"
+  end_date: "2026-02-13"
   encoding: "cp1252"
   target_cod_prod: "T1PRE"
 
