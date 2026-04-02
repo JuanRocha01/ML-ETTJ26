@@ -32,8 +32,8 @@ b3_price_report:
 
 b3_swap:
   raw_dir: "data/01_raw/b3/DerivativesMarket-SwapMarketRates"
-  start_date: "2026-01-02"
-  end_date: "2026-02-13"
+  start_date: "2020-01-02"
+  end_date: "2022-12-31"
   encoding: "cp1252"
   target_cod_prod: "T1PRE"
 

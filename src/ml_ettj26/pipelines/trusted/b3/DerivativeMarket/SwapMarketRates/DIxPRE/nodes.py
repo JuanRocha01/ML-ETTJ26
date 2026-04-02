@@ -40,7 +40,7 @@ def build_b3_swap_trusted_range_partitioned(
         }
 
     mapper = SwapLineMapper(
-        config=SwapLineMapperConfig(adjusted_value_scale=10_000),
+        config=SwapLineMapperConfig(adjusted_value_scale=100_000),
         specs_by_code=specs_by_code,
         specs_by_name=specs_by_name,
     )

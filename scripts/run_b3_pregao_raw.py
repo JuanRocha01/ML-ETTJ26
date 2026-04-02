@@ -15,7 +15,7 @@ from ml_ettj26.extractors.b3_pregao_raw import (
 def main() -> None:
     # Deixe isso explícito para evitar surpresa com cwd:
     # execute: python -m ml_ettj26.extractors.run_b3_pregao
-    start_day = date(2020, 1, 1)
+    start_day = date(2026, 1, 30)  # data de início do backfill (ajuste conforme necessário)
     end_day = date.today()
 
     transport = HttpTransport(timeout_sec=30, max_retries=4, backoff_sec=1.0)

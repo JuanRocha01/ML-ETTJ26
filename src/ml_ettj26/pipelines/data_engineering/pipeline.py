@@ -1,7 +1,7 @@
 # src/ml_ettj26/pipelines/data_engineering/pipeline.py
 from kedro.pipeline import Pipeline, node, pipeline
 
-from ml_ettj26.nodes.extraction import (
+from ml_ettj26.nodes.extraction_old import (
     extract_bcb_rates,
     extract_anbima_bonds,
     extract_b3_di_futures,
