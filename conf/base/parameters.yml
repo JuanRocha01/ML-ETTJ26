@@ -24,8 +24,8 @@ bcb_demab:
   zip_prefix: "NegE"
 
 b3_di1_range:
-  start_month: "2024-01"
-  end_month: "2026-01"
+  start_month: "2020-01"
+  end_month: "2022-01"
 
 b3_price_report:
   head_bytes: 64000
