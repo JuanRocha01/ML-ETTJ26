@@ -92,3 +92,12 @@ bcb_demab_quotes_daily_trusted:
       index: false
     load_args:
       engine: pyarrow
+
+refined_ref_calendar_br_market:
+  type: pandas.ParquetDataset
+  filepath: data/calendars/03_refined/Calendar_BR_dim.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
+

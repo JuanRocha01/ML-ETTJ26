@@ -9,6 +9,8 @@ from ml_ettj26.pipelines.trusted.anbima.pipeline import create_pipeline as anbim
 from ml_ettj26.pipelines.trusted.b3.PriceReport.DI1.pipeline import create_pipeline as b3_di1_pipeline
 from ml_ettj26.pipelines.trusted.b3.DerivativeMarket.SwapMarketRates.DIxPRE.pipeline import create_pipeline as b3_swap_dixpre_pipeline
 
+from ml_ettj26.pipelines.refined.calendar.pipeline import create_pipeline as refined_calendar_pipeline
+
 
 def register_pipelines() -> dict[str, Pipeline]:
     trusted_bcb_sgs = bcb_sgs_trusted()
@@ -19,6 +21,9 @@ def register_pipelines() -> dict[str, Pipeline]:
 
     trusted_all = trusted_bcb_sgs + trusted_bcb_demab
 
+    refined_calendar = refined_calendar_pipeline()
+
+
     pipelines = {
         "trusted_all": trusted_all,
 
@@ -27,6 +32,9 @@ def register_pipelines() -> dict[str, Pipeline]:
         "trusted_bcb_demab": trusted_bcb_demab,
         "trusted_b3_di1": trusted_b3_di1,
         "trusted_b3_swap_dixpre": trusted_b3_swap_dixpre,
+
+        "refined_calendar": refined_calendar,
+
     }
 
     # você pode definir o default
