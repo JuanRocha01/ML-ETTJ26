@@ -4,17 +4,19 @@ from pathlib import Path
 import duckdb
 
 from ml_ettj26.infraestructure.duckdb.connections import get_connection
+from ml_ettj26.infraestructure.duckdb.runners import run_sql_file
 
 def main():
     con = get_connection()
 
-    record_trusted_calendar(con)
-    record_trusted_sgs(con)
-    record_trusted_demab(con)
-    record_trusted_forwards_di1(con)
-    record_trusted_swap_dixpre(con)
-
-    con.close()
+    try:
+        record_trusted_calendar(con)
+        record_trusted_sgs(con)
+        record_trusted_demab(con)
+        record_trusted_forwards_di1(con)
+        record_trusted_swap_dixpre(con)
+    finally:
+        con.close()
 
 def record_trusted_calendar(con: duckdb.DuckDBPyConnection) -> None:
     run_sql_file(con, "sql/02_trusted/calendar.sql")
@@ -30,11 +32,6 @@ def record_trusted_forwards_di1(con: duckdb.DuckDBPyConnection) -> None:
 
 def record_trusted_swap_dixpre(con: duckdb.DuckDBPyConnection) -> None:
     run_sql_file(con, "sql/02_trusted/b3_swaps_dixpre.sql")
-
-def run_sql_file(con: duckdb.DuckDBPyConnection, file_path: str) -> None:
-    print(f"Running {file_path}")
-    sql_script = Path(file_path).read_text(encoding="utf-8")
-    con.execute(sql_script)
 
 if __name__ == "__main__":
     main()

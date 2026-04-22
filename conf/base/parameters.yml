@@ -51,3 +51,5 @@ b3_swap:
       float_leg: "DI"
       calendar: "BU/252"
 
+sgs_selic_series_id: 432
+sgs_ipca_series_id: 433

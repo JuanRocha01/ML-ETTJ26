@@ -10,6 +10,7 @@ from ml_ettj26.pipelines.trusted.b3.PriceReport.DI1.pipeline import create_pipel
 from ml_ettj26.pipelines.trusted.b3.DerivativeMarket.SwapMarketRates.DIxPRE.pipeline import create_pipeline as b3_swap_dixpre_pipeline
 
 from ml_ettj26.pipelines.refined.calendar.pipeline import create_pipeline as refined_calendar_pipeline
+from ml_ettj26.pipelines.refined.bcb_sgs import create_pipeline as create_bcb_sgs_refined_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -22,6 +23,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     trusted_all = trusted_bcb_sgs + trusted_bcb_demab
 
     refined_calendar = refined_calendar_pipeline()
+    refined_bcb_sgs = create_bcb_sgs_refined_pipeline()
 
 
     pipelines = {
@@ -34,6 +36,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         "trusted_b3_swap_dixpre": trusted_b3_swap_dixpre,
 
         "refined_calendar": refined_calendar,
+        "refined_bcb_sgs": refined_bcb_sgs,
 
     }
 
