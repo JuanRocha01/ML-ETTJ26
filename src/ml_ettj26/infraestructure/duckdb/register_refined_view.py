@@ -11,6 +11,8 @@ def main():
     try:
         record_refined_calendar(con)
         record_refined_bcb_sgs(con)
+        record_refined_bcb_demab(con)
+
     finally:
         con.close()
 
@@ -19,6 +21,9 @@ def record_refined_calendar(con: duckdb.DuckDBPyConnection) -> None:
 
 def record_refined_bcb_sgs(con: duckdb.DuckDBPyConnection) -> None:
     run_sql_file(con, "sql/03_refined/bcb_sgs.sql")
+
+def record_refined_bcb_demab(con: duckdb.DuckDBPyConnection) -> None:
+    run_sql_file(con, "sql/03_refined/bcb_demab.sql")
 
 if __name__ == "__main__":
     main()

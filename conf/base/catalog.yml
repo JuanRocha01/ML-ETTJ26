@@ -119,3 +119,11 @@ refined_bcb_sgs_ipca:
     index: false
   load_args:
     engine: pyarrow
+
+refined_bcb_demab_secondary_market:
+  type: pandas.ParquetDataset
+  filepath: data/03_refined/bcb/demab/demab_government_bonds_secondary_market_refined.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow

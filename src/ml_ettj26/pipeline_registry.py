@@ -11,6 +11,7 @@ from ml_ettj26.pipelines.trusted.b3.DerivativeMarket.SwapMarketRates.DIxPRE.pipe
 
 from ml_ettj26.pipelines.refined.calendar.pipeline import create_pipeline as refined_calendar_pipeline
 from ml_ettj26.pipelines.refined.bcb_sgs import create_pipeline as create_bcb_sgs_refined_pipeline
+from ml_ettj26.pipelines.refined.bcb_demab import create_pipeline as create_bcb_demab_refined_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -24,6 +25,7 @@ def register_pipelines() -> dict[str, Pipeline]:
 
     refined_calendar = refined_calendar_pipeline()
     refined_bcb_sgs = create_bcb_sgs_refined_pipeline()
+    refined_bcb_demab = create_bcb_demab_refined_pipeline()
 
 
     pipelines = {
@@ -37,7 +39,7 @@ def register_pipelines() -> dict[str, Pipeline]:
 
         "refined_calendar": refined_calendar,
         "refined_bcb_sgs": refined_bcb_sgs,
-
+        "refined_bcb_demab": refined_bcb_demab,
     }
 
     # você pode definir o default
