@@ -6,14 +6,6 @@ from ml_ettj26.infraestructure.duckdb.connections import get_connection
 
 
 def build_demab_refined() -> pd.DataFrame:
-    """
-    Build a refined DEMAB dataset from trusted DuckDB views.
-
-    Returns
-    -------
-    pd.DataFrame
-        Refined DEMAB dataframe.
-    """
     con = get_connection()
 
     try:
@@ -23,7 +15,7 @@ def build_demab_refined() -> pd.DataFrame:
         meta AS (
             SELECT
                 isin,
-                sigla AS name,
+                sigla,
                 emissao_date AS issue_date,
                 vencimento_date AS maturity,
                 source
@@ -49,7 +41,7 @@ def build_demab_refined() -> pd.DataFrame:
         SELECT
             p.date,
             m.isin,
-            m.name,
+            m.sigla,
             p.pu_min,
             p.pu_med,
             p.pu_max,
@@ -61,7 +53,38 @@ def build_demab_refined() -> pd.DataFrame:
             m.issue_date,
             m.maturity,
             m.source,
-            p.raw_hash
+            p.raw_hash,
+
+            (p.pu_lastro IS NOT NULL) AS has_pu_lastro,
+            (p.valor_par IS NOT NULL) AS has_valor_par,
+            (
+                p.taxa_min IS NOT NULL
+                OR p.taxa_med IS NOT NULL
+                OR p.taxa_max IS NOT NULL
+            ) AS has_any_taxa_reported,
+
+            CASE
+                WHEN m.sigla = 'LTN' THEN 'zero_coupon'
+                WHEN m.sigla = 'NTN-F' THEN 'fixed_coupon'
+                WHEN m.sigla IN ('NTN-B', 'NTN-C') THEN 'inflation_linked'
+                WHEN m.sigla IN ('NTN-A3','NTN-A6', 'NTN-D') THEN 'currency_linked'
+                WHEN m.sigla IN ('LFT', 'LFT-A', 'LFT-B') THEN 'floating_rate'
+                ELSE 'unknown'
+            END AS instrument_family,
+
+            CASE
+                WHEN m.sigla = 'LTN'
+                 AND p.pu_lastro IS NOT NULL
+                 AND p.valor_par IS NOT NULL
+                THEN TRUE
+
+                WHEN m.sigla = 'NTN-F'
+                 AND p.pu_lastro IS NOT NULL
+                THEN TRUE
+
+                ELSE FALSE
+            END AS rebuild_candidate
+
         FROM meta AS m
         JOIN points AS p
         USING (isin)
