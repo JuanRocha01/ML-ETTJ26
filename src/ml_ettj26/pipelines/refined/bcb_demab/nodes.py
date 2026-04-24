@@ -36,59 +36,92 @@ def build_demab_refined() -> pd.DataFrame:
                 taxa_max,
                 raw_zip_hash AS raw_hash
             FROM vw_trusted_bcb_demab_quotes
+        ),
+
+        base AS (
+            SELECT
+                p.date,
+                m.isin,
+                m.sigla,
+                p.pu_min,
+                p.pu_med,
+                p.pu_max,
+                p.taxa_min,
+                p.taxa_med,
+                p.taxa_max,
+                p.pu_lastro,
+                p.valor_par,
+                m.issue_date,
+                m.maturity,
+                m.source,
+                p.raw_hash,
+
+                (p.pu_lastro IS NOT NULL) AS has_pu_lastro,
+                (p.valor_par IS NOT NULL) AS has_valor_par,
+                (
+                    p.taxa_min IS NOT NULL
+                    OR p.taxa_med IS NOT NULL
+                    OR p.taxa_max IS NOT NULL
+                ) AS has_any_taxa_reported,
+
+                CASE
+                    WHEN m.sigla = 'LTN' THEN 'zero_coupon'
+                    WHEN m.sigla = 'NTN-F' THEN 'fixed_coupon'
+                    WHEN m.sigla IN ('NTN-B', 'NTN-C') THEN 'inflation_linked'
+                    WHEN m.sigla IN ('NTN-A3','NTN-A6', 'NTN-D') THEN 'currency_linked'
+                    WHEN m.sigla IN ('LFT', 'LFT-A', 'LFT-B') THEN 'floating_rate'
+                    ELSE 'unknown'
+                END AS instrument_family,
+
+                CASE
+                    WHEN m.sigla = 'LTN'
+                    AND p.pu_lastro IS NOT NULL
+                    AND p.valor_par IS NOT NULL
+                    THEN TRUE
+
+                    WHEN m.sigla = 'NTN-F'
+                    AND p.pu_lastro IS NOT NULL
+                    THEN TRUE
+
+                    ELSE FALSE
+                END AS rebuild_candidate
+
+            FROM points AS p
+            LEFT JOIN meta AS m
+                USING (isin)
         )
 
         SELECT
-            p.date,
-            m.isin,
-            m.sigla,
-            p.pu_min,
-            p.pu_med,
-            p.pu_max,
-            p.taxa_min,
-            p.taxa_med,
-            p.taxa_max,
-            p.pu_lastro,
-            p.valor_par,
-            m.issue_date,
-            m.maturity,
-            m.source,
-            p.raw_hash,
+            b.date,
+            b.isin,
+            b.sigla,
+            b.pu_lastro,
+            b.valor_par,
+            b.issue_date,
+            b.maturity,
 
-            (p.pu_lastro IS NOT NULL) AS has_pu_lastro,
-            (p.valor_par IS NOT NULL) AS has_valor_par,
-            (
-                p.taxa_min IS NOT NULL
-                OR p.taxa_med IS NOT NULL
-                OR p.taxa_max IS NOT NULL
-            ) AS has_any_taxa_reported,
+            DATE_DIFF('day', b.date, b.maturity) AS days_to_maturity,
+            cal_maturity.bd_index - cal_trade.bd_index AS bd_to_maturity,
 
-            CASE
-                WHEN m.sigla = 'LTN' THEN 'zero_coupon'
-                WHEN m.sigla = 'NTN-F' THEN 'fixed_coupon'
-                WHEN m.sigla IN ('NTN-B', 'NTN-C') THEN 'inflation_linked'
-                WHEN m.sigla IN ('NTN-A3','NTN-A6', 'NTN-D') THEN 'currency_linked'
-                WHEN m.sigla IN ('LFT', 'LFT-A', 'LFT-B') THEN 'floating_rate'
-                ELSE 'unknown'
-            END AS instrument_family,
+            b.pu_min,
+            b.pu_med,
+            b.pu_max,
+            b.taxa_min,
+            b.taxa_med,
+            b.taxa_max,
+            
+            b.source,
+            b.raw_hash,
 
-            CASE
-                WHEN m.sigla = 'LTN'
-                 AND p.pu_lastro IS NOT NULL
-                 AND p.valor_par IS NOT NULL
-                THEN TRUE
+        FROM base AS b
 
-                WHEN m.sigla = 'NTN-F'
-                 AND p.pu_lastro IS NOT NULL
-                THEN TRUE
+        LEFT JOIN vw_refined_calendar_br AS cal_trade
+            ON b.date = CAST(cal_trade.date AS DATE)
 
-                ELSE FALSE
-            END AS rebuild_candidate
+        LEFT JOIN vw_refined_calendar_br AS cal_maturity
+            ON b.maturity = CAST(cal_maturity.date AS DATE)
 
-        FROM meta AS m
-        JOIN points AS p
-        USING (isin)
-        ORDER BY p.date
+        ORDER BY b.date ASC, b.maturity ASC
         """
 
         df = con.execute(query).fetchdf()
