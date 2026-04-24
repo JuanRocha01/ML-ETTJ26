@@ -127,3 +127,11 @@ refined_bcb_demab_secondary_market:
     index: false
   load_args:
     engine: pyarrow
+
+refined_b3_forward_di1:
+  type: pandas.ParquetDataset
+  filepath: data/03_refined/b3/forwards/b3_forwards_di1_refined.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
