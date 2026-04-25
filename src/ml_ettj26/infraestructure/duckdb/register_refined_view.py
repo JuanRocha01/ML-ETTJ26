@@ -13,6 +13,7 @@ def main():
         record_refined_bcb_sgs(con)
         record_refined_bcb_demab(con)
         record_refined_b3_forward_di1(con)
+        record_refined_b3_swap_dixpre(con)
 
     finally:
         con.close()
@@ -28,6 +29,9 @@ def record_refined_bcb_demab(con: duckdb.DuckDBPyConnection) -> None:
 
 def record_refined_b3_forward_di1(con: duckdb.DuckDBPyConnection) -> None:
     run_sql_file(con, "sql/03_refined/b3_forward_di1.sql")
+
+def record_refined_b3_swap_dixpre(con: duckdb.DuckDBPyConnection) -> None:
+    run_sql_file(con, "sql/03_refined/b3_swap_dixpre.sql")
 
 if __name__ == "__main__":
     main()

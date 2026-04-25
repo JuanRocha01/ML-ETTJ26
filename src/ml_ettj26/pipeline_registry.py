@@ -13,7 +13,7 @@ from ml_ettj26.pipelines.refined.calendar.pipeline import create_pipeline as ref
 from ml_ettj26.pipelines.refined.bcb_sgs import create_pipeline as create_bcb_sgs_refined_pipeline
 from ml_ettj26.pipelines.refined.bcb_demab import create_pipeline as create_bcb_demab_refined_pipeline
 from ml_ettj26.pipelines.refined.b3_di1 import create_pipeline as create_b3_forwards_di1_refined_pipeline
-
+from ml_ettj26.pipelines.refined.b3_swaps.b3_dixpre import create_pipeline as b3_swap_dixpre_pipeline
 
 def register_pipelines() -> dict[str, Pipeline]:
     trusted_bcb_sgs = bcb_sgs_trusted()
@@ -28,6 +28,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     refined_bcb_sgs = create_bcb_sgs_refined_pipeline()
     refined_bcb_demab = create_bcb_demab_refined_pipeline()
     refined_b3_forward_di1 = create_b3_forwards_di1_refined_pipeline()
+    refined_b3_swap_dixpre = b3_swap_dixpre_pipeline()
 
     pipelines = {
         "trusted_all": trusted_all,
@@ -42,6 +43,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         "refined_bcb_sgs": refined_bcb_sgs,
         "refined_bcb_demab": refined_bcb_demab,
         "refined_b3_forward_di1": refined_b3_forward_di1,
+        "refined_b3_swap_dixpre": refined_b3_swap_dixpre,
     }
 
     # você pode definir o default

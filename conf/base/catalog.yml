@@ -135,3 +135,11 @@ refined_b3_forward_di1:
     index: false
   load_args:
     engine: pyarrow
+
+refined_b3_swap_dipre:
+  type: pandas.ParquetDataset
+  filepath: data/03_refined/b3/swaps/b3_swaps_dipre_refined.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
