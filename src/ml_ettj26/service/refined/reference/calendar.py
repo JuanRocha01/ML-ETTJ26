@@ -6,9 +6,9 @@ def build_refined_dim_calendar_br_market(df_trusted : pd.DataFrame) -> pd.DataFr
     return (
         df_trusted.copy()
         .pipe(rename_calendar_columns)
+        .pipe(add_act_index)
         .pipe(add_date_parts)
         .pipe(add_calendar_flags)
-        .pipe(add_act_index)
         .pipe(finalize_calendar_schema)
         .pipe(validate_refined_calendar)
     )
