@@ -13,6 +13,22 @@ def calendar_df():
         [
             {
                 "calendar_id": "BR_ANBIMA",
+                "date": date(2025, 12, 31),
+                "year": 2025,
+                "month": 12,
+                "day": 31,
+                "weekday": 2,
+                "is_weekend": False,
+                "is_holiday": False,
+                "is_business_day": True,
+                "act_index": 0,
+                "bd_index": 0,
+                "holiday_name": None,
+                "source_file_hash": "hash",
+            },
+
+            {
+                "calendar_id": "BR_ANBIMA",
                 "date": date(2026, 1, 1),
                 "year": 2026,
                 "month": 1,

@@ -56,6 +56,20 @@ def test_adjust_to_next_business_day_when_date_is_already_business_day(calendar_
 
     assert result == date(2026, 1, 2)
 
+def test_adjust_to_previous_business_day_when_date_is_holiday(calendar_repo):
+    result = calendar_repo.adjust_to_previous_business_day(date(2026, 1, 1))
+
+    assert result == date(2025, 12, 31)
+
+def test_adjust_to_previous_business_day_when_date_is_weekend(calendar_repo):
+    result = calendar_repo.adjust_to_previous_business_day(date(2026, 1, 3))
+
+    assert result == date(2026, 1, 2)
+
+def test_adjust_to_previous_business_day_when_date_is_already_business_day(calendar_repo):
+    result = calendar_repo.adjust_to_previous_business_day(date(2026, 1, 2))
+
+    assert result == date(2026, 1, 2)
 
 def test_first_business_day_of_month(calendar_repo):
     result = calendar_repo.first_business_day_of_month(2026, 1)

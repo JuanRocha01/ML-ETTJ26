@@ -30,6 +30,13 @@ class DataFrameCalendarRepository(BusinessCalendarRepository):
             (self._data["is_business_day"] == True)
         )
         return self._data[mask].index[0]
+    
+    def adjust_to_previous_business_day(self, d: date) -> date:
+        mask = (
+            (self._data.index <= d) &
+            (self._data["is_business_day"] == True)
+        )
+        return self._data[mask].index[-1]
 
     def first_business_day_of_month(self, year: int, month: int) -> date:
         mask = (
