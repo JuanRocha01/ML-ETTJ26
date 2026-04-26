@@ -27,6 +27,7 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["ml_ettj26*"]
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-q -ra"

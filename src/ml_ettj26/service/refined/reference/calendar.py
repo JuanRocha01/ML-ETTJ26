@@ -8,12 +8,18 @@ def build_refined_dim_calendar_br_market(df_trusted : pd.DataFrame) -> pd.DataFr
         .pipe(rename_calendar_columns)
         .pipe(add_date_parts)
         .pipe(add_calendar_flags)
+        .pipe(add_act_index)
         .pipe(finalize_calendar_schema)
         .pipe(validate_refined_calendar)
     )
 
 def rename_calendar_columns(df : pd.DataFrame) -> pd.DataFrame:
     return df.rename(columns={"cal_id":"calendar_id"})
+
+def add_act_index(df : pd.DataFrame) -> pd.DataFrame:
+    df_out = df.copy()
+    df_out["act_index"] = range(len(df_out))
+    return df_out
 
 def add_date_parts(df : pd.DataFrame) -> pd.DataFrame:
     df_out = df.copy()
@@ -43,6 +49,7 @@ def finalize_calendar_schema(df : pd.DataFrame) -> pd.DataFrame:
         "is_weekend",
         "is_holiday",
         "is_business_day",
+        "act_index",
         "bd_index",
         "holiday_name",
         "source_file_hash"]
