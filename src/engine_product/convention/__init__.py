@@ -1,3 +1,3 @@
-from .conventions import BU252
+from .conventions import BU252, DayCountConventionRepository
 
-__all__ = ["BU252"]
+__all__ = ["BU252", "DayCountConventionRepository"]
