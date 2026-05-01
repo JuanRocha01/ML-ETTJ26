@@ -3,7 +3,7 @@ from datetime import date
 from engine_product.convention import DayCountConventionRepository
 
 
-class FixedRateIndexer:
+class CompoundFixedRateIndexer:
     def __init__(
         self,
         annual_rate: float,
@@ -14,4 +14,4 @@ class FixedRateIndexer:
 
     def accrual_factor(self, start: date, end: date) -> float:
         yf = self.day_count.year_fraction(start, end)
-        return self.annual_rate * yf
+        return (1 + self.annual_rate) ** yf - 1

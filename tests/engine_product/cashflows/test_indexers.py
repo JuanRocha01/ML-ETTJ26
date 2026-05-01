@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from engine_product.cashflows.indexers.fixed import FixedRateIndexer
+from engine_product.cashflows.indexers.fixed import CompoundFixedRateIndexer
 from engine_product.cashflows.indexers.cdi import CDIPlusSpreadIndexer
 from engine_product.cashflows.indexers.ipca import IPCAPlusSpreadIndexer
 
@@ -20,8 +20,8 @@ class FakeCurve:
         return self.factor
 
 
-def test_fixed_rate_indexer_returns_rate_times_year_fraction():
-    indexer = FixedRateIndexer(
+def test_compound_fixed_rate_indexer_returns_rate_times_year_fraction():
+    indexer = CompoundFixedRateIndexer(
         annual_rate=0.12,
         day_count=FakeDayCount(),
     )
@@ -31,7 +31,7 @@ def test_fixed_rate_indexer_returns_rate_times_year_fraction():
         date(2026, 7, 1),
     )
 
-    assert result == pytest.approx(0.06)
+    assert result == pytest.approx(0.0583005244)
 
 
 def test_cdi_plus_spread_indexer():

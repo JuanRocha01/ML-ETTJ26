@@ -8,7 +8,7 @@ from engine_product.cashflows.components.amortization import AmortizationCompone
 from engine_product.cashflows.components.principal import PrincipalComponent
 from engine_product.cashflows.components.optionality import EarlyRedemptionComponent
 from engine_product.cashflows.events import CashflowEvent
-from engine_product.cashflows.indexers.fixed import FixedRateIndexer
+from engine_product.cashflows.indexers.fixed import CompoundFixedRateIndexer
 from engine_product.cashflows.indexers.cdi import CDIPlusSpreadIndexer
 from engine_product.cashflows.indexers.ipca import IPCAPlusSpreadIndexer
 from engine_product.cashflows.models import CashflowType
@@ -40,7 +40,7 @@ def test_simple_fixed_rate_bullet_cashflows():
         ),
     ]
 
-    indexer = FixedRateIndexer(
+    indexer = CompoundFixedRateIndexer(
         annual_rate=0.12,
         day_count=FakeDayCount(),
     )
@@ -68,8 +68,8 @@ def test_simple_fixed_rate_bullet_cashflows():
         if cf.cashflow_type == CashflowType.PRINCIPAL
     ]
 
-    assert interest_cashflows[0].amount == pytest.approx(60_000)
-    assert interest_cashflows[1].amount == pytest.approx(60_000)
+    assert interest_cashflows[0].amount == pytest.approx(58_300.5244)
+    assert interest_cashflows[1].amount == pytest.approx(58_300.5244)
     assert principal_cashflows[0].amount == pytest.approx(1_000_000)
 
 
