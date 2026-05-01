@@ -20,7 +20,7 @@ class FakeCalendar:
     def is_business_day(self, d: date) -> bool:
         return d.weekday() < 5 and d not in self.holidays
 
-    def adjust_next_business_day(self, d: date) -> date:
+    def adjust_to_next_business_day(self, d: date) -> date:
         current = d
 
         while not self.is_business_day(current):
@@ -196,13 +196,13 @@ def test_ntnf_build_cashflows_generates_interest_and_principal_cashflows():
     assert len(principal_cashflows) == 1
 
     assert interest_cashflows[0].payment_date == date(2026, 7, 1)
-    assert interest_cashflows[0].amount == pytest.approx(coupon_amount)
+    assert interest_cashflows[0].amount == coupon_amount
 
     assert interest_cashflows[1].payment_date == date(2027, 1, 4)
-    assert interest_cashflows[1].amount == pytest.approx(coupon_amount)
+    assert interest_cashflows[1].amount == coupon_amount
 
     assert principal_cashflows[0].payment_date == date(2027, 1, 4)
-    assert principal_cashflows[0].amount == pytest.approx(1000.0)
+    assert principal_cashflows[0].amount == 1_000.0
 
 
 def test_ntnf_allows_overriding_notional_and_coupon_rate():
@@ -231,5 +231,5 @@ def test_ntnf_allows_overriding_notional_and_coupon_rate():
         if cf.cashflow_type == CashflowType.PRINCIPAL
     ]
 
-    assert interest_cashflows[0].amount == pytest.approx(coupon_amount)
-    assert principal_cashflows[0].amount == pytest.approx(2_000.0)
+    assert interest_cashflows[0].amount == coupon_amount
+    assert principal_cashflows[0].amount == 2_000.0

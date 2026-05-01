@@ -13,7 +13,7 @@ def unadjusted() -> DateAdjuster:
 
 def following(calendar: BusinessCalendar) -> DateAdjuster:
     def adjust(d: date) -> date:
-        return calendar.adjust_next_business_day(d)
+        return calendar.adjust_to_next_business_day(d)
 
     return adjust
 

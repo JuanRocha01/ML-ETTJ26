@@ -7,7 +7,7 @@ from engine_product.calendars.business_calendar import BusinessCalendar
 from engine_product.cashflows import CashflowEngineBuilder, CashflowEvent
 from engine_product.cashflows.components.interest import InterestComponent
 from engine_product.cashflows.components.principal import PrincipalComponent
-from engine_product.cashflows.indexers.fixed import CompoundFixedRateIndexer
+from engine_product.cashflows.indexers.fixed import PeriodicFixedCouponIndexer
 from engine_product.cashflows.models import Cashflow
 
 from engine_product.schedules import (
@@ -101,10 +101,10 @@ class NTNFContract:
         ]
 
     def build_cashflows(self, as_of_date: date) -> list[Cashflow]:
-        indexer = CompoundFixedRateIndexer(
+        indexer = PeriodicFixedCouponIndexer(
             annual_rate=self.coupon_rate,
-            day_count=self.day_count,
-        )
+            frequency=2,
+            )
 
         return (
             CashflowEngineBuilder(
