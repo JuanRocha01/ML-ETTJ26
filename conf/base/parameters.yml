@@ -53,3 +53,20 @@ b3_swap:
 
 sgs_selic_series_id: 432
 sgs_ipca_series_id: 433
+
+
+duckdb_views:
+  trusted:
+    sql_files:
+      - "sql/02_trusted/calendar.sql"
+      - "sql/02_trusted/bcb_sgs.sql"
+      - "sql/02_trusted/bcb_demab.sql"
+      - "sql/02_trusted/b3_forwards_di1.sql"
+      - "sql/02_trusted/b3_swaps_dixpre.sql"
+  refined:
+    sql_files:
+      - "sql/03_refined/calendar.sql"
+      - "sql/03_refined/bcb_sgs.sql"
+      - "sql/03_refined/bcb_demab.sql"
+      - "sql/03_refined/b3_forward_di1.sql"
+      - "sql/03_refined/b3_swap_dixpre.sql"

@@ -27,6 +27,7 @@ def add_date_parts(df : pd.DataFrame) -> pd.DataFrame:
     df_out["year"] = df_out["date"].dt.year.astype("int32")
     df_out["month"] = df_out["date"].dt.month.astype("int32")
     df_out["day"] = df_out["date"].dt.day.astype("int32")
+    df_out["date"] = df_out["date"].dt.date
     
     return df_out
 
