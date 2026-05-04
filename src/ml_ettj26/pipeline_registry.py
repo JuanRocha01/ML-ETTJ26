@@ -17,6 +17,9 @@ from ml_ettj26.pipelines.refined.b3_di1 import create_pipeline as create_b3_forw
 from ml_ettj26.pipelines.refined.b3_swaps.b3_dixpre import create_pipeline as b3_swap_dixpre_pipeline
 from ml_ettj26.pipelines.refined.view_duckdb.pipeline import create_pipeline as register_refined_view
 
+from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline as public_bonds_mart_pipeline
+
+
 def register_pipelines() -> dict[str, Pipeline]:
     trusted_bcb_sgs = bcb_sgs_trusted()
     trusted_bcb_demab = demab_trusted()
@@ -32,6 +35,9 @@ def register_pipelines() -> dict[str, Pipeline]:
     refined_b3_swap_dixpre = b3_swap_dixpre_pipeline()
     refined_register_view = register_refined_view()
 
+    public_bonds_mart = public_bonds_mart_pipeline.create_pipeline()
+
+
     pipelines = {
         "trusted_anbima_calendar": trusted_anbima_calendar,
         "trusted_bcb_sgs": trusted_bcb_sgs,
@@ -46,6 +52,8 @@ def register_pipelines() -> dict[str, Pipeline]:
         "refined_b3_forward_di1": refined_b3_forward_di1,
         "refined_b3_swap_dixpre": refined_b3_swap_dixpre,
         "refined_register_view": refined_register_view,
+
+        "public_bonds_mart": public_bonds_mart,
     }
 
     return pipelines

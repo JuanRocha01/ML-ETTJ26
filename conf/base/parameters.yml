@@ -70,3 +70,11 @@ duckdb_views:
       - "sql/03_refined/bcb_demab.sql"
       - "sql/03_refined/b3_forward_di1.sql"
       - "sql/03_refined/b3_swap_dixpre.sql"
+
+duckdb:
+  database_path: data/duckdb/ml_ettj26.duckdb
+
+public_bonds_curve_mart:
+  sql_files:
+    - sql/marts/public_bonds/01_mart_public_bonds_quotes_quality.sql
+    - sql/marts/public_bonds/02_mart_public_bonds_curve_candidates_and_exclusions.sql

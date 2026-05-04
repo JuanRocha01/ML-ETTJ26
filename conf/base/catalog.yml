@@ -143,3 +143,11 @@ refined_b3_swap_dipre:
     index: false
   load_args:
     engine: pyarrow
+
+mart_public_bonds_curve_inputs:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_inputs.parquet
+
+mart_public_bonds_curve_calculation_failures:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_calculation_failures.parquet
