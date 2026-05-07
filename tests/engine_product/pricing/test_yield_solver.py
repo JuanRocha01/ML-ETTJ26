@@ -53,7 +53,7 @@ def test_newton_solver_solves_simple_problem():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10)
+    assert result.ytm == pytest.approx(0.10, abs=1e-10)
     assert result.method == YieldSolverMethod.NEWTON
     assert result.iterations is not None
 
@@ -67,7 +67,7 @@ def test_brent_solver_solves_simple_problem():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10)
+    assert result.ytm == pytest.approx(0.10, abs=1e-10)
     assert result.method == YieldSolverMethod.BRENT
     assert result.iterations is not None
 
@@ -102,7 +102,7 @@ def test_expanded_brent_solver_expands_upper_bound_and_solves():
 
     expected = 1100.0 / 100.0 - 1.0
 
-    assert result.ytm == pytest.approx(expected)
+    assert result.ytm == pytest.approx(expected, abs=1e-10)
     assert result.method == YieldSolverMethod.BRENT_EXPANDED
 
 def test_fallback_solver_uses_newton_when_newton_converges():
@@ -118,7 +118,7 @@ def test_fallback_solver_uses_newton_when_newton_converges():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10)
+    assert result.ytm == pytest.approx(0.10, abs=1e-10 )
     assert result.method == YieldSolverMethod.NEWTON
 
 def test_fallback_solver_uses_brent_after_previous_solver_fails():
@@ -133,7 +133,7 @@ def test_fallback_solver_uses_brent_after_previous_solver_fails():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10)
+    assert result.ytm == pytest.approx(0.10, abs=1e-10)
     assert result.method == YieldSolverMethod.BRENT
 
 def test_fallback_solver_uses_expanded_brent_after_brent_fails():
@@ -159,7 +159,7 @@ def test_fallback_solver_uses_expanded_brent_after_brent_fails():
 
     expected = 1100.0 / 100.0 - 1.0
 
-    assert result.ytm == pytest.approx(expected)
+    assert result.ytm == pytest.approx(expected, abs=1e-10)
     assert result.method == YieldSolverMethod.BRENT_EXPANDED
 
 def test_fallback_solver_raises_error_when_all_solvers_fail():
@@ -180,7 +180,7 @@ def test_yield_to_maturity_uses_default_solver_chain():
 
     result = yield_to_maturity(problem)
 
-    assert result.ytm == pytest.approx(0.10)
+    assert result.ytm == pytest.approx(0.10, abs=1e-10)
     assert result.method in {
         YieldSolverMethod.NEWTON,
         YieldSolverMethod.BRENT,

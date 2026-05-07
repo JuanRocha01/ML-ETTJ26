@@ -44,7 +44,7 @@ def test_yield_problem_objective_is_zero_at_correct_yield():
 
     result = problem.objective(0.10)
 
-    assert result == pytest.approx(0.0)
+    assert result == pytest.approx(0.0, abs=1e-10)
 
 
 def test_yield_problem_derivative_for_single_cashflow():
@@ -59,7 +59,7 @@ def test_yield_problem_derivative_for_single_cashflow():
 
     expected = -1.0 * 1100.0 / (1.10 ** 2)
 
-    assert result == pytest.approx(expected)
+    assert result == pytest.approx(expected, abs=1e-10)
 
 
 def test_yield_problem_ignores_past_cashflows():
@@ -83,7 +83,7 @@ def test_yield_problem_ignores_past_cashflows():
         day_count=FakeDayCount(),
     )
 
-    assert problem.price_from_yield(0.10) == pytest.approx(1000.0)
+    assert problem.price_from_yield(0.10) == pytest.approx(1000.0, abs=1e-10)
 
 
 def test_yield_problem_rejects_non_positive_market_price():

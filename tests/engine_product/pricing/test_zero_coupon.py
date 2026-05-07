@@ -21,7 +21,7 @@ def test_zero_coupon_yield_solves_closed_form_yield():
 
     expected = (1000.0 / 900.0) - 1.0
 
-    assert result == pytest.approx(expected)
+    assert result == expected
 
 
 def test_zero_coupon_yield_rejects_non_positive_price():
