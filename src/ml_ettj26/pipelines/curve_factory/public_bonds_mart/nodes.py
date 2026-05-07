@@ -407,6 +407,26 @@ def build_public_bonds_curve_inputs(
                 )
 
     for row in iterator:
+        if row.pu_med > 5000.0:
+            failures.append(
+                {
+                    "ref_date": as_date(get_row_value(row, "ref_date")),
+                    "instrument_type": getattr(row, "instrument_type", None),
+                    "isin": getattr(row, "isin", None),
+                    "issue_date": as_date(get_row_value(row, "issue_date", "emissao")),
+                    "maturity_date": as_date(get_row_value(row, "maturity_date", "maturity")),
+                    "bd_to_maturity": getattr(row, "bd_to_maturity", None),
+                    "pu_med": getattr(row, "pu_med", None),
+                    "taxa_med": getattr(row, "taxa_med", None),
+                    "quote_quality": getattr(row, "quote_quality", None),
+                    "quote_source": getattr(row, "quote_source", None),
+                    "primary_quote_type": getattr(row, "primary_quote_type", None),
+                    "calculation_status": "FAILED",
+                    "calculation_error_type": "InvalidPrice",
+                    "calculation_error_message": f"Market price {row.pu_med} is above Notional (5000.00)",
+                }
+            )
+            continue
         try:
             if row.instrument_type == "LTN":
                 result_row = compute_ltn_curve_input_row(
