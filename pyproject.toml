@@ -10,6 +10,7 @@ dependencies = [
     "fastparquet>=2024.0,<2026.0",
     "kedro==1.2.0",
     "kedro-datasets==9.2.0",
+    "matplotlib>=3.10.9",
     "numpy>=2.0,<3.0",
     "pandas>=3.0,<4.0",
     "pyarrow>=16,<17",

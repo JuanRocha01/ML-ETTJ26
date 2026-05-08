@@ -15,6 +15,8 @@ from engine_product.pricing.yield_solvers import (
     yield_to_maturity,
 )
 
+ACCEPTED_ERROR = 1e-10
+
 
 class FakeDayCount:
     def year_fraction(self, start: date, end: date) -> float:
@@ -24,6 +26,47 @@ class AlwaysFailSolver:
     def solve(self, problem):
         raise RuntimeError("forced failure")
 
+
+class MultiCashflowDayCount:
+    def year_fraction(self, start: date, end: date) -> float:
+        if end == date(2027, 1, 1):
+            return 1.0
+
+        if end == date(2028, 1, 1):
+            return 2.0
+
+        if end == date(2029, 1, 1):
+            return 3.0
+
+        raise ValueError(f"Unexpected payment date: {end}")
+
+
+def make_coupon_bond_cashflows():
+    return [
+        Cashflow(
+            payment_date=date(2027, 1, 1),
+            amount=50.0,
+            cashflow_type=CashflowType.INTEREST,
+        ),
+        Cashflow(
+            payment_date=date(2028, 1, 1),
+            amount=50.0,
+            cashflow_type=CashflowType.INTEREST,
+        ),
+        Cashflow(
+            payment_date=date(2029, 1, 1),
+            amount=1050.0,
+            cashflow_type=CashflowType.PRINCIPAL,
+        ),
+    ]
+
+
+def coupon_bond_price_at_10_percent() -> float:
+    return (
+        50.0 / (1.10 ** 1)
+        + 50.0 / (1.10 ** 2)
+        + 1050.0 / (1.10 ** 3)
+    )
 
 def make_problem(
     amount: float = 1100.0,
@@ -42,6 +85,15 @@ def make_problem(
         day_count=FakeDayCount(),
     )
 
+def make_coupon_bond_problem() -> YieldProblem:
+    return YieldProblem(
+        cashflows=make_coupon_bond_cashflows(),
+        market_price=coupon_bond_price_at_10_percent(),
+        settlement_date=date(2026, 1, 1),
+        day_count=MultiCashflowDayCount(),
+    )
+
+
 def test_newton_solver_solves_simple_problem():
     problem = make_problem()
 
@@ -53,7 +105,7 @@ def test_newton_solver_solves_simple_problem():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10, abs=1e-10)
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.NEWTON
     assert result.iterations is not None
 
@@ -67,7 +119,7 @@ def test_brent_solver_solves_simple_problem():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10, abs=1e-10)
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.BRENT
     assert result.iterations is not None
 
@@ -102,7 +154,7 @@ def test_expanded_brent_solver_expands_upper_bound_and_solves():
 
     expected = 1100.0 / 100.0 - 1.0
 
-    assert result.ytm == pytest.approx(expected, abs=1e-10)
+    assert result.ytm == pytest.approx(expected, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.BRENT_EXPANDED
 
 def test_fallback_solver_uses_newton_when_newton_converges():
@@ -118,7 +170,7 @@ def test_fallback_solver_uses_newton_when_newton_converges():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10, abs=1e-10 )
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.NEWTON
 
 def test_fallback_solver_uses_brent_after_previous_solver_fails():
@@ -133,7 +185,7 @@ def test_fallback_solver_uses_brent_after_previous_solver_fails():
 
     result = solver.solve(problem)
 
-    assert result.ytm == pytest.approx(0.10, abs=1e-10)
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.BRENT
 
 def test_fallback_solver_uses_expanded_brent_after_brent_fails():
@@ -159,8 +211,64 @@ def test_fallback_solver_uses_expanded_brent_after_brent_fails():
 
     expected = 1100.0 / 100.0 - 1.0
 
-    assert result.ytm == pytest.approx(expected, abs=1e-10)
+    assert result.ytm == pytest.approx(expected, abs=ACCEPTED_ERROR)
     assert result.method == YieldSolverMethod.BRENT_EXPANDED
+
+def test_newton_solver_solves_multiple_cashflows():
+    problem = make_coupon_bond_problem()
+
+    solver = NewtonYieldSolver(
+        initial_guess=0.08,
+        lower=-0.95,
+        upper=10.0,
+    )
+
+    result = solver.solve(problem)
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method == YieldSolverMethod.NEWTON
+    assert result.iterations is not None
+
+def test_brent_solver_solves_multiple_cashflows():
+    problem = make_coupon_bond_problem()
+
+    solver = BrentYieldSolver(
+        lower=-0.95,
+        upper=1.50,
+    )
+
+    result = solver.solve(problem)
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method == YieldSolverMethod.BRENT
+    assert result.iterations is not None
+
+def test_fallback_solver_uses_brent_for_multiple_cashflows_after_first_solver_fails():
+    problem = make_coupon_bond_problem()
+
+    solver = FallbackYieldSolver(
+        solvers=[
+            AlwaysFailSolver(),
+            BrentYieldSolver(lower=-0.95, upper=1.50),
+        ]
+    )
+
+    result = solver.solve(problem)
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method == YieldSolverMethod.BRENT
+
+def test_yield_to_maturity_solves_multiple_cashflows_with_default_chain():
+    problem = make_coupon_bond_problem()
+
+    result = yield_to_maturity(problem)
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method in {
+        YieldSolverMethod.NEWTON,
+        YieldSolverMethod.BRENT,
+        YieldSolverMethod.BRENT_EXPANDED,
+    }
 
 def test_fallback_solver_raises_error_when_all_solvers_fail():
     problem = make_problem()
@@ -180,7 +288,7 @@ def test_yield_to_maturity_uses_default_solver_chain():
 
     result = yield_to_maturity(problem)
 
-    assert result.ytm == pytest.approx(0.10, abs=1e-10)
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method in {
         YieldSolverMethod.NEWTON,
         YieldSolverMethod.BRENT,
