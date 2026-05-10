@@ -96,6 +96,13 @@ def top_tracemalloc_lines(limit: int = 10) -> list[dict[str, Any]]:
     ]
 
 
+def safe_rate(count: int | float, seconds: float) -> float:
+    if seconds <= 0.0:
+        return 0.0
+
+    return float(count / seconds)
+
+
 def summarize_batch_results(batch_results) -> dict[str, Any]:
     method_counts = Counter()
     error_counts = Counter()
@@ -284,6 +291,32 @@ def run_diagnostics(args: argparse.Namespace) -> dict[str, Any]:
 
     total_timed_seconds = sum(timings.values())
     timings["total_timed_seconds"] = total_timed_seconds
+    curve_candidate_rows = counts["curve_candidates_rows"]
+    mart_calculation_seconds = (
+        timings["prepare_rows_cashflows_and_problems"]
+        + timings["yield_to_maturity_batch"]
+        + timings["finalize_success_rows_and_durations"]
+    )
+
+    throughput = {
+        "curve_candidate_rows": curve_candidate_rows,
+        "problem_count_for_batch_solver": counts["problem_count_for_batch_solver"],
+        "mart_calculation_seconds": mart_calculation_seconds,
+        "mart_calculation_bonds_per_second": safe_rate(
+            curve_candidate_rows,
+            mart_calculation_seconds,
+        ),
+        "solver_seconds": timings["yield_to_maturity_batch"],
+        "solver_problems_per_second": safe_rate(
+            counts["problem_count_for_batch_solver"],
+            timings["yield_to_maturity_batch"],
+        ),
+        "end_to_end_seconds": total_timed_seconds,
+        "end_to_end_bonds_per_second": safe_rate(
+            curve_candidate_rows,
+            total_timed_seconds,
+        ),
+    }
 
     return {
         "timings_seconds": timings,
@@ -292,6 +325,7 @@ def run_diagnostics(args: argparse.Namespace) -> dict[str, Any]:
             for key, value in timings.items()
             if key != "total_timed_seconds"
         },
+        "throughput": throughput,
         "counts": counts,
         "memory": memory_marks,
         "top_memory_lines": top_tracemalloc_lines(args.top_memory_lines),

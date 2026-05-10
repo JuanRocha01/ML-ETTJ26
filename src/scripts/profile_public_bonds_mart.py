@@ -129,6 +129,13 @@ def top_tracemalloc_lines(limit: int = 10) -> list[dict[str, Any]]:
     ]
 
 
+def safe_rate(count: int | float, seconds: float) -> float:
+    if seconds <= 0.0:
+        return 0.0
+
+    return float(count / seconds)
+
+
 def make_failure_row(row: Any, error_type: str, error_message: str) -> dict:
     return {
         "ref_date": as_date(get_row_value(row, "ref_date")),
@@ -308,6 +315,21 @@ def run_diagnostics(args: argparse.Namespace) -> dict[str, Any]:
 
     total_timed_seconds = sum(timings.values())
     timings["total_timed_seconds"] = total_timed_seconds
+    curve_candidate_rows = counts["curve_candidates_rows"]
+
+    throughput = {
+        "curve_candidate_rows": curve_candidate_rows,
+        "mart_calculation_seconds": timings["row_loop_compute_yields_and_durations"],
+        "mart_calculation_bonds_per_second": safe_rate(
+            curve_candidate_rows,
+            timings["row_loop_compute_yields_and_durations"],
+        ),
+        "end_to_end_seconds": total_timed_seconds,
+        "end_to_end_bonds_per_second": safe_rate(
+            curve_candidate_rows,
+            total_timed_seconds,
+        ),
+    }
 
     return {
         "timings_seconds": timings,
@@ -316,6 +338,7 @@ def run_diagnostics(args: argparse.Namespace) -> dict[str, Any]:
             for key, value in timings.items()
             if key != "total_timed_seconds"
         },
+        "throughput": throughput,
         "counts": counts,
         "memory": memory_marks,
         "top_memory_lines": top_tracemalloc_lines(args.top_memory_lines),
