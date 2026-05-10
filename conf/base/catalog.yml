@@ -151,3 +151,11 @@ mart_public_bonds_curve_inputs:
 mart_public_bonds_curve_calculation_failures:
   type: pandas.ParquetDataset
   filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_calculation_failures.parquet
+
+mart_public_bonds_curve_inputs_batch:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_inputs_batch.parquet
+
+mart_public_bonds_curve_calculation_failures_batch:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_calculation_failures_batch.parquet

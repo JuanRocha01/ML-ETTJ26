@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Iterable, Protocol
+from typing import Protocol
 
-import numpy as np
 from scipy.optimize import brentq, newton
 
 from engine_product.pricing.yield_problem import YieldProblem
@@ -11,9 +10,9 @@ from engine_product.pricing.yield_problem import YieldProblem
 class YieldSolverMethod(str, Enum):
     ZERO_COUPON = "ZERO_COUPON"
     NEWTON = "NEWTON"
-    NEWTON_BATCH = "NEWTON_BATCH"
     BRENT = "BRENT"
     BRENT_EXPANDED = "BRENT_EXPANDED"
+
 
 
 @dataclass(frozen=True)
@@ -22,35 +21,9 @@ class YieldSolverResult:
     method: YieldSolverMethod
     iterations: int | None = None
 
-@dataclass(frozen=True)
-class YieldSolverBatchResult:
-    index: int
-    result: YieldSolverResult | None = None
-    error_type: str | None = None
-    error_message: str | None = None
-
-    @property
-    def succeeded(self) -> bool:
-        return self.result is not None
-
-
 class YieldSolver(Protocol):
     def solve(self, problem: YieldProblem) -> YieldSolverResult:
         ...
-
-
-@dataclass(frozen=True)
-class SingleCashflowYieldSolver:
-    def solve(self, problem: YieldProblem) -> YieldSolverResult:
-        if not problem.is_single_cashflow:
-            raise RuntimeError("problem is not single-cashflow")
-
-        return YieldSolverResult(
-            ytm=problem.zero_coupon_yield(),
-            method=YieldSolverMethod.ZERO_COUPON,
-            iterations=0,
-        )
-
 
 @dataclass(frozen=True)
 class FallbackYieldSolver:
@@ -63,10 +36,14 @@ class FallbackYieldSolver:
             try:
                 return solver.solve(problem)
             except Exception as exc:
-                errors.append(f"{solver.__class__.__name__}: {exc}")
+                errors.append(
+                    f"{solver.__class__.__name__}: {exc}"
+                )
 
-        raise RuntimeError("All yield solvers failed. " + " | ".join(errors))
-
+        raise RuntimeError(
+            "All yield solvers failed. "
+            + " | ".join(errors)
+        )
 
 @dataclass(frozen=True)
 class NewtonYieldSolver:
@@ -99,7 +76,6 @@ class NewtonYieldSolver:
             iterations=info.iterations,
         )
 
-
 @dataclass(frozen=True)
 class BrentYieldSolver:
     lower: float = -0.95
@@ -113,10 +89,18 @@ class BrentYieldSolver:
         f_upper = problem.objective(self.upper)
 
         if f_lower == 0:
-            return YieldSolverResult(self.lower, YieldSolverMethod.BRENT, 0)
+            return YieldSolverResult(
+                ytm=self.lower,
+                method=YieldSolverMethod.BRENT,
+                iterations=0,
+            )
 
         if f_upper == 0:
-            return YieldSolverResult(self.upper, YieldSolverMethod.BRENT, 0)
+            return YieldSolverResult(
+                ytm=self.upper,
+                method=YieldSolverMethod.BRENT,
+                iterations=0,
+            )
 
         if f_lower * f_upper > 0:
             raise RuntimeError(
@@ -136,8 +120,11 @@ class BrentYieldSolver:
             disp=False,
         )
 
-        return YieldSolverResult(float(root), YieldSolverMethod.BRENT, info.iterations)
-
+        return YieldSolverResult(
+            ytm=float(root),
+            method=YieldSolverMethod.BRENT,
+            iterations=info.iterations,
+        )
 
 @dataclass(frozen=True)
 class ExpandedBrentYieldSolver:
@@ -151,16 +138,25 @@ class ExpandedBrentYieldSolver:
 
     def solve(self, problem: YieldProblem) -> YieldSolverResult:
         f_lower = problem.objective(self.lower)
+
         current_upper = self.initial_upper
 
         while current_upper <= self.max_upper:
             f_upper = problem.objective(current_upper)
 
             if f_lower == 0:
-                return YieldSolverResult(self.lower, YieldSolverMethod.BRENT_EXPANDED, 0)
+                return YieldSolverResult(
+                    ytm=self.lower,
+                    method=YieldSolverMethod.BRENT_EXPANDED,
+                    iterations=0,
+                )
 
             if f_upper == 0:
-                return YieldSolverResult(current_upper, YieldSolverMethod.BRENT_EXPANDED, 0)
+                return YieldSolverResult(
+                    ytm=current_upper,
+                    method=YieldSolverMethod.BRENT_EXPANDED,
+                    iterations=0,
+                )
 
             if f_lower * f_upper < 0:
                 root, info = brentq(
@@ -175,15 +171,18 @@ class ExpandedBrentYieldSolver:
                 )
 
                 return YieldSolverResult(
-                    float(root),
-                    YieldSolverMethod.BRENT_EXPANDED,
-                    info.iterations,
+                    ytm=float(root),
+                    method=YieldSolverMethod.BRENT_EXPANDED,
+                    iterations=info.iterations,
                 )
 
             if current_upper == self.max_upper:
                 break
 
-            current_upper = min(current_upper * self.expansion_factor, self.max_upper)
+            current_upper = min(
+                current_upper * self.expansion_factor,
+                self.max_upper,
+            )
 
         raise RuntimeError(
             "Expanded Brent root is not bracketed. "
@@ -194,13 +193,18 @@ class ExpandedBrentYieldSolver:
             f"objective(max_upper)={problem.objective(self.max_upper)}"
         )
 
-
 def default_yield_solver() -> FallbackYieldSolver:
     return FallbackYieldSolver(
         solvers=[
-            SingleCashflowYieldSolver(),
-            NewtonYieldSolver(initial_guess=0.10, lower=-0.95, upper=10.0),
-            BrentYieldSolver(lower=-0.95, upper=1.50),
+            NewtonYieldSolver(
+                initial_guess=0.10,
+                lower=-0.95,
+                upper=10.0,
+            ),
+            BrentYieldSolver(
+                lower=-0.95,
+                upper=1.50,
+            ),
             ExpandedBrentYieldSolver(
                 lower=-0.95,
                 initial_upper=1.50,
@@ -210,27 +214,10 @@ def default_yield_solver() -> FallbackYieldSolver:
         ]
     )
 
-
 def yield_to_maturity(
     problem: YieldProblem,
     solver: YieldSolver | None = None,
-) -> YieldSolverResult:
+    ) -> YieldSolverResult:
     solver = solver or default_yield_solver()
     return solver.solve(problem)
-
-def yield_to_maturity_batch(
-    problems: Iterable[YieldProblem],
-    solver: object | None = None,
-):
-    """
-    Public batch entrypoint.
-
-    Kept here so callers can import both unit and batch APIs from
-    engine_product.pricing.yield_solvers without knowing the implementation
-    module.
-    """
-    from engine_product.pricing.yield_solvers_batch import BatchYieldSolver
-
-    batch_solver = solver or BatchYieldSolver()
-    return batch_solver.solve_many(problems)
 

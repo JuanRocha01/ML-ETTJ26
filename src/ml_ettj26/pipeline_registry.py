@@ -18,6 +18,7 @@ from ml_ettj26.pipelines.refined.b3_swaps.b3_dixpre import create_pipeline as b3
 from ml_ettj26.pipelines.refined.view_duckdb.pipeline import create_pipeline as register_refined_view
 
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline as public_bonds_mart_pipeline
+from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_batch as public_bonds_mart_batch_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -36,6 +37,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     refined_register_view = register_refined_view()
 
     public_bonds_mart = public_bonds_mart_pipeline.create_pipeline()
+    public_bonds_mart_batch = public_bonds_mart_batch_pipeline.create_pipeline()
 
 
     pipelines = {
@@ -54,6 +56,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         "refined_register_view": refined_register_view,
 
         "public_bonds_mart": public_bonds_mart,
+        "public_bonds_mart_batch": public_bonds_mart_batch,
     }
 
     return pipelines

@@ -12,7 +12,10 @@ from engine_product.pricing.yield_solvers import (
     FallbackYieldSolver,
     NewtonYieldSolver,
     YieldSolverMethod,
+    SingleCashflowYieldSolver,
     yield_to_maturity,
+    yield_to_maturity_batch,
+
 )
 
 ACCEPTED_ERROR = 1e-10
@@ -265,6 +268,7 @@ def test_yield_to_maturity_solves_multiple_cashflows_with_default_chain():
 
     assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method in {
+        YieldSolverMethod.ZERO_COUPON,
         YieldSolverMethod.NEWTON,
         YieldSolverMethod.BRENT,
         YieldSolverMethod.BRENT_EXPANDED,
@@ -290,7 +294,79 @@ def test_yield_to_maturity_uses_default_solver_chain():
 
     assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
     assert result.method in {
+        YieldSolverMethod.ZERO_COUPON,
         YieldSolverMethod.NEWTON,
         YieldSolverMethod.BRENT,
         YieldSolverMethod.BRENT_EXPANDED,
     }
+
+def test_single_cashflow_solver_solves_zero_coupon_problem():
+    problem = make_problem()
+
+    result = SingleCashflowYieldSolver().solve(problem)
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method == YieldSolverMethod.ZERO_COUPON
+    assert result.iterations == 0
+
+def test_default_solver_uses_zero_coupon_for_single_cashflow():
+    result = yield_to_maturity(make_problem())
+
+    assert result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+    assert result.method == YieldSolverMethod.ZERO_COUPON
+
+def test_batch_vectorizes_single_cashflow_problems():
+    problems = [
+        make_problem(amount=1100.0, market_price=1000.0),
+        make_problem(amount=1210.0, market_price=1000.0),
+    ]
+
+    results = yield_to_maturity_batch(problems)
+
+    assert [item.succeeded for item in results] == [True, True]
+    assert [item.result.method for item in results] == [
+        YieldSolverMethod.ZERO_COUPON,
+        YieldSolverMethod.ZERO_COUPON,
+    ]
+    assert [item.result.ytm for item in results] == pytest.approx(
+        [0.10, 0.21],
+        abs=ACCEPTED_ERROR,
+    )
+
+def test_batch_returns_individual_failure_for_invalid_single_cashflow():
+    problem = YieldProblem.from_time_amount_pairs(
+        time_amount_pairs=[(1.0, -100.0)],
+        market_price=1000.0,
+    )
+
+    results = yield_to_maturity_batch([problem])
+
+    assert results[0].succeeded is False
+    assert results[0].error_type == "ValueError"
+
+def test_batch_keeps_processing_after_failure():
+    problems = [
+        YieldProblem.from_time_amount_pairs(
+            time_amount_pairs=[(1.0, -100.0)],
+            market_price=1000.0,
+        ),
+        make_problem(amount=1100.0, market_price=1000.0),
+    ]
+
+    results = yield_to_maturity_batch(problems)
+
+    assert results[0].succeeded is False
+    assert results[1].succeeded is True
+    assert results[1].result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+
+def test_batch_processes_multi_cashflow_with_unit_solver():
+    problems = [
+        make_problem(),
+        make_coupon_bond_problem(),
+    ]
+
+    results = yield_to_maturity_batch(problems)
+
+    assert results[0].result.method == YieldSolverMethod.ZERO_COUPON
+    assert results[1].succeeded is True
+    assert results[1].result.ytm == pytest.approx(0.10, abs=ACCEPTED_ERROR)

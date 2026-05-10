@@ -5,8 +5,16 @@ from engine_product.pricing.yield_solvers import (
     BrentYieldSolver,
     ExpandedBrentYieldSolver,
     FallbackYieldSolver,
+    SingleCashflowYieldSolver,
     default_yield_solver,
     yield_to_maturity,
+    yield_to_maturity_batch,
+)
+
+from engine_product.pricing.yield_solvers_batch import (
+    BatchNewtonConfig,
+    BatchYieldSolver,
+    YieldSolverBatchResult,
 )
 
 from engine_product.pricing.yield_problem import YieldProblem
@@ -20,7 +28,12 @@ __all__ = [
     "BrentYieldSolver",
     "ExpandedBrentYieldSolver",
     "FallbackYieldSolver",
+    "SingleCashflowYieldSolver",
     "default_yield_solver",
     "yield_to_maturity",
+    "yield_to_maturity_batch",
     "zero_coupon_yield",
+    "BatchNewtonConfig",
+    "BatchYieldSolver",
+    "YieldSolverBatchResult",
 ]

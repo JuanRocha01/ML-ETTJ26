@@ -155,11 +155,11 @@ def test_yield_problem_time_amount_pairs_with_multiple_cashflows():
         day_count=MultiCashflowDayCount(),
     )
 
-    assert problem.time_amount_pairs == [
+    assert problem.time_amount_pairs == (
         (1.0, 50.0),
         (2.0, 50.0),
         (3.0, 1050.0),
-    ]
+    )
 
 def test_yield_problem_ignores_past_cashflows():
     cashflows = [
@@ -221,3 +221,45 @@ def test_yield_problem_rejects_yield_less_than_minus_one():
 
     with pytest.raises(ValueError, match="ytm must be greater than -1"):
         problem.price_from_yield(-1.0)
+
+def test_yield_problem_detects_single_cashflow():
+    problem = YieldProblem(
+        cashflows=make_single_cashflow(1100.0),
+        market_price=1000.0,
+        settlement_date=date(2026, 1, 1),
+        day_count=FakeDayCount(),
+    )
+
+    assert problem.is_single_cashflow is True
+
+def test_yield_problem_zero_coupon_yield_for_single_cashflow():
+    problem = YieldProblem(
+        cashflows=make_single_cashflow(1100.0),
+        market_price=1000.0,
+        settlement_date=date(2026, 1, 1),
+        day_count=FakeDayCount(),
+    )
+
+    assert problem.zero_coupon_yield() == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+
+def test_yield_problem_zero_coupon_yield_rejects_multiple_cashflows():
+    problem = YieldProblem(
+        cashflows=make_coupon_bond_cashflows(),
+        market_price=coupon_bond_price_at_10_percent(),
+        settlement_date=date(2026, 1, 1),
+        day_count=MultiCashflowDayCount(),
+    )
+
+    with pytest.raises(ValueError, match="requires exactly one future cashflow"):
+        problem.zero_coupon_yield()
+
+def test_yield_problem_from_time_amount_pairs_prices_without_cashflows():
+    problem = YieldProblem.from_time_amount_pairs(
+        time_amount_pairs=[(1.0, 1100.0)],
+        market_price=1000.0,
+    )
+
+    assert problem.is_single_cashflow is True
+    assert problem.price_from_yield(0.10) == pytest.approx(1000.0, abs=ACCEPTED_ERROR)
+    assert problem.zero_coupon_yield() == pytest.approx(0.10, abs=ACCEPTED_ERROR)
+
