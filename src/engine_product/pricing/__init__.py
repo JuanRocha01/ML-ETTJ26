@@ -19,6 +19,13 @@ from engine_product.pricing.yield_solvers_batch import (
 
 from engine_product.pricing.yield_problem import YieldProblem
 from engine_product.pricing.zero_coupon import zero_coupon_yield
+from engine_product.pricing.cashflow_arrays import (
+    CashflowScheduleArrays,
+    build_bd_index_lookup,
+    build_cashflow_schedule_lookup,
+    macaulay_duration_from_time_amount_pairs,
+    price_from_time_amount_pairs,
+)
 
 __all__ = [
     "YieldProblem",
@@ -33,6 +40,11 @@ __all__ = [
     "yield_to_maturity",
     "yield_to_maturity_batch",
     "zero_coupon_yield",
+    "CashflowScheduleArrays",
+    "build_bd_index_lookup",
+    "build_cashflow_schedule_lookup",
+    "macaulay_duration_from_time_amount_pairs",
+    "price_from_time_amount_pairs",
     "BatchNewtonConfig",
     "BatchYieldSolver",
     "YieldSolverBatchResult",

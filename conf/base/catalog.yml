@@ -159,3 +159,27 @@ mart_public_bonds_curve_inputs_batch:
 mart_public_bonds_curve_calculation_failures_batch:
   type: pandas.ParquetDataset
   filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_calculation_failures_batch.parquet
+
+mart_public_bonds_cashflow_dimension:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_cashflow_dimension.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
+
+mart_public_bonds_curve_inputs_dimension_batch:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_inputs_dimension_batch.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow
+
+mart_public_bonds_curve_calculation_failures_dimension_batch:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/curve_factory/public_bonds/mart_public_bonds_curve_calculation_failures_dimension_batch.parquet
+  save_args:
+    index: false
+  load_args:
+    engine: pyarrow

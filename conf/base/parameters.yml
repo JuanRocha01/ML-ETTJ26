@@ -78,3 +78,9 @@ public_bonds_curve_mart:
   sql_files:
     - sql/marts/public_bonds/01_mart_public_bonds_quotes_quality.sql
     - sql/marts/public_bonds/02_mart_public_bonds_curve_candidates_and_exclusions.sql
+
+public_bonds_cashflow_dimension:
+  sql_files:
+    - sql/03_refined/calendar.sql
+    - sql/03_refined/bcb_demab.sql
+  parquet_path: data/04_feature/curve_factory/public_bonds/mart_public_bonds_cashflow_dimension.parquet
