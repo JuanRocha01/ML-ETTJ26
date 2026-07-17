@@ -111,6 +111,17 @@ def build_public_bonds_curve_inputs_from_cashflow_dimension(
             )
             continue
 
+        if row.pu_med < 50.0:
+            failures.append(
+                make_failure_row(
+                    row=row,
+                    error_type="InvalidPrice",
+                    error_message=f"Market price {row.pu_med} is below Notional (90.00)",
+                )
+            )
+            continue
+
+
         try:
             ref_date = as_date(get_row_value(row, "ref_date"))
             issue_date = as_date(get_row_value(row, "issue_date", "emissao"))
