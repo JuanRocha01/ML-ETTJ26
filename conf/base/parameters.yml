@@ -84,3 +84,12 @@ public_bonds_cashflow_dimension:
     - sql/03_refined/calendar.sql
     - sql/03_refined/bcb_demab.sql
   parquet_path: data/04_feature/curve_factory/public_bonds/mart_public_bonds_cashflow_dimension.parquet
+
+bootstrapping:
+  start_date: "2020-01-01"
+  max_years: 20
+  business_days_per_year: 252
+  instrument_types:
+    - LTN
+    - NTN-F
+  batch_size: 64

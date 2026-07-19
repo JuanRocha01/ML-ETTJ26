@@ -30,7 +30,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["ml_ettj26*"]
+include = ["ml_ettj26*", "factory_curve*"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

@@ -183,3 +183,13 @@ mart_public_bonds_curve_calculation_failures_dimension_batch:
     index: false
   load_args:
     engine: pyarrow
+
+public_bonds_flat_forward_curves:
+  type: pandas.ParquetDataset
+  filepath: data/curves/public_bonds_flat_forward_curves.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow

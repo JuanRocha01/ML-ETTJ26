@@ -25,6 +25,7 @@ from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline as publ
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_batch as public_bonds_mart_batch_pipeline
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_dimension_batch as public_bonds_mart_dimension_batch_pipeline
 from ml_ettj26.pipelines.curve_factory.public_bonds_cashflows import pipeline as public_bonds_cashflows_pipeline
+from factory_curve.bootstrapping import pipeline as bootstrapping_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -46,6 +47,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     public_bonds_mart_batch = public_bonds_mart_batch_pipeline.create_pipeline()
     public_bonds_mart_dimension_batch = public_bonds_mart_dimension_batch_pipeline.create_pipeline()
     public_bonds_cashflows = public_bonds_cashflows_pipeline.create_pipeline()
+    public_bonds_bootstrapping = bootstrapping_pipeline.create_pipeline()
 
 
     pipelines = {
@@ -68,6 +70,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         "public_bonds_mart": public_bonds_mart,
         "public_bonds_mart_batch": public_bonds_mart_batch,
         "public_bonds_mart_dimension_batch": public_bonds_mart_dimension_batch,
+        "public_bonds_bootstrapping": public_bonds_bootstrapping,
         
     }
 
