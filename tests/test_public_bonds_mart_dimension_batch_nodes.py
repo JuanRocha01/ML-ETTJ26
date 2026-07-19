@@ -71,9 +71,13 @@ def make_curve_candidate(
         "quote_quality": "OK",
         "quote_source": "TEST",
         "primary_quote_type": primary_quote_type,
-        "numero_observacoes_dia": 2,
-        "flag_volume": "LOW",
-        "flag_cobertura_tenors": "MEDIUM",
+        "numero_observacoes_dia": 10,
+        "numero_observacoes_curto": 2,
+        "numero_observacoes_medio": 4,
+        "numero_observacoes_longo": 4,
+        "flag_volume": "MEDIUM",
+        "flag_cobertura_tenors": "GOOD",
+        "flag_ocupacao_tenors": "GOOD",
     }
 
 
@@ -156,6 +160,10 @@ def test_dimension_batch_node_uses_cashflow_dimension_for_batch_yields():
 
     assert by_isin.loc["LTN1", "solver_method"] == "ZERO_COUPON"
     assert by_isin.loc["LTN1", "market_ytm"] == pytest.approx(0.10, abs=1e-10)
+    assert by_isin.loc["LTN1", "numero_observacoes_curto"] == 2
+    assert by_isin.loc["LTN1", "numero_observacoes_medio"] == 4
+    assert by_isin.loc["LTN1", "numero_observacoes_longo"] == 4
+    assert by_isin.loc["LTN1", "flag_ocupacao_tenors"] == "GOOD"
 
     assert by_isin.loc["NTNF1", "solver_method"] == "NEWTON_BATCH"
     assert by_isin.loc["NTNF1", "market_ytm"] == pytest.approx(0.10, abs=1e-10)
