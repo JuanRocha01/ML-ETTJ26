@@ -194,6 +194,70 @@ public_bonds_flat_forward_curves:
   load_args:
     engine: pyarrow
 
+public_bonds_krr_calibration_dates:
+  type: pandas.ParquetDataset
+  filepath: data/06_models/factory_curve/kernel_ridge/calibration_dates.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_krr_hyperparameter_search:
+  type: pandas.ParquetDataset
+  filepath: data/06_models/factory_curve/kernel_ridge/hyperparameter_search.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_krr_selected_hyperparameters:
+  type: pandas.ParquetDataset
+  filepath: data/06_models/factory_curve/kernel_ridge/selected_hyperparameters.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_krr_models:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/06_models/factory_curve/kernel_ridge/models
+  dataset:
+    type: pickle.PickleDataset
+    backend: pickle
+  filename_suffix: ".pkl"
+  overwrite: true
+
+public_bonds_krr_model_dimension:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/kernel_ridge/model_dimension.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_krr_curves:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/07_model_output/factory_curve/kernel_ridge/curves
+  dataset:
+    type: pandas.ParquetDataset
+    save_args:
+      index: false
+      engine: pyarrow
+      compression: zstd
+    load_args:
+      engine: pyarrow
+  filename_suffix: ".parquet"
+  overwrite: true
+  save_lazily: true
+
 public_bonds_nelson_siegel_models:
   type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
   path: data/06_models/factory_curve/nelson_siegel

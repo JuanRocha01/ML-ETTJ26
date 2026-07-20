@@ -94,6 +94,31 @@ bootstrapping:
     - NTN-F
   batch_size: 64
 
+kernel_ridge:
+  # The tuning cutoff is exclusive. No observation on or after this date can
+  # participate in hyperparameter selection.
+  tuning_cutoff_date: "2020-01-01"
+  production_start_date: "2020-01-01"
+  instrument_types:
+    - LTN
+    - NTN-F
+  # Matches the multiple-date filter in yye9701/KR_example.
+  min_maturity_bd: 90
+  min_observations: 4
+  business_days_per_year: 252
+  max_years: 20
+  model_batch_size: 32
+  show_progress: true
+  condition_number_limit: 1.0e14
+  loocv_denominator_tolerance: 1.0e-10
+  # Filipovic-style LOOCV grid. Alpha is extended to 0.20 for the higher
+  # Brazilian rate regime. The selected triplet is frozen before production.
+  hyperparameter_grid:
+    ridge: [0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0]
+    alpha: [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10,
+            0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20]
+    delta: [0.0, 1.0e-6, 1.0e-5, 1.0e-4, 1.0e-3, 0.01, 0.1, 1.0]
+
 nelson_siegel:
   start_date: "2020-01-01"
   instrument_types:
