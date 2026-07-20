@@ -325,3 +325,122 @@ public_bonds_svensson_curves:
   filename_suffix: ".parquet"
   overwrite: true
   save_lazily: true
+
+factory_curve_bootstrapping_daily:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/data_treatment/bootstrapping_daily.parquet
+  save_args:
+    index: true
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+factory_curve_nelson_siegel_daily:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/data_treatment/nelson_siegel_daily.parquet
+  save_args:
+    index: true
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+factory_curve_svensson_daily:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/data_treatment/svensson_daily.parquet
+  save_args:
+    index: true
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+factory_curve_kernel_ridge_daily:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/data_treatment/kernel_ridge_daily.parquet
+  save_args:
+    index: true
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+factory_curve_data_treatment_complete:
+  type: MemoryDataset
+
+factory_curve_evaluation_rate_errors:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/rate_errors.parquet
+  save_args: &factory_curve_evaluation_save_args
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args: &factory_curve_evaluation_load_args
+    engine: pyarrow
+
+factory_curve_evaluation_rate_metrics_daily:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/rate_metrics_daily.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_rate_metrics_summary:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/rate_metrics_summary.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_repricing_errors:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/repricing_errors.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_repricing_metrics_daily:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/repricing_metrics_daily.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_repricing_metrics_summary:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/repricing_metrics_summary.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_pca_scores_daily:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/pca_scores_daily.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_pca_loadings:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/pca_loadings.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_forward_diagnostics_daily:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/forward_diagnostics_daily.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_forward_violations:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/forward_violations.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_rolldown_results:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/rolldown_results.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args
+
+factory_curve_evaluation_rolldown_metrics:
+  type: pandas.ParquetDataset
+  filepath: data/08_reporting/factory_curve/evaluation/rolldown_metrics.parquet
+  save_args: *factory_curve_evaluation_save_args
+  load_args: *factory_curve_evaluation_load_args

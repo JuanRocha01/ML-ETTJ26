@@ -74,6 +74,33 @@ duckdb_views:
 duckdb:
   database_path: data/duckdb/ml_ettj26.duckdb
 
+factory_curve_data_treatment:
+  views:
+    vw_factory_curve_bootstrapping_daily: data/07_model_output/factory_curve/data_treatment/bootstrapping_daily.parquet
+    vw_factory_curve_nelson_siegel_daily: data/07_model_output/factory_curve/data_treatment/nelson_siegel_daily.parquet
+    vw_factory_curve_svensson_daily: data/07_model_output/factory_curve/data_treatment/svensson_daily.parquet
+    vw_factory_curve_kernel_ridge_daily: data/07_model_output/factory_curve/data_treatment/kernel_ridge_daily.parquet
+
+factory_curve_evaluation:
+  business_days_per_year: 252
+  notional: 1000.0
+  # refined_b3_swap_dipre stores DI x PRE quotations in percentage points.
+  swap_rate_scale: 0.01
+  # PCA uses monthly BU vertices and daily changes.
+  pca_tenor_step_bd: 21
+  # Nominal BRL curves are diagnosed outside these economic forward bounds.
+  minimum_forward_rate: 0.0
+  maximum_forward_rate: 1.0
+  rolldown_start_date: "2020-01-01"
+  rolldown_end_date: "2026-12-31"
+  rolldown_short_end_bd: 504
+  rolldown_medium_end_bd: 1260
+  rolldown_short_targets_bd: [252]
+  rolldown_medium_targets_bd: [756, 1260]
+  rolldown_long_targets_bd: [2520]
+  curve_derivative_step_bd: 5
+  price_sensitivity_bump: 0.0001
+
 public_bonds_curve_mart:
   sql_files:
     - sql/marts/public_bonds/01_mart_public_bonds_quotes_quality.sql

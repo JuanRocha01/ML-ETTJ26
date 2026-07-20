@@ -31,6 +31,8 @@ from factory_curve.nelson_siegel import pipeline as nelson_siegel_pipeline
 from factory_curve.nelson_siegel import calculator_pipeline as nelson_siegel_calculator_pipeline
 from factory_curve.svensson import pipeline as svensson_pipeline
 from factory_curve.svensson import calculator_pipeline as svensson_calculator_pipeline
+from factory_curve.data_treatment import pipeline as curve_data_treatment_pipeline
+from factory_curve.evaluation import pipeline as curve_evaluation_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -66,6 +68,8 @@ def register_pipelines() -> dict[str, Pipeline]:
         public_bonds_nelson_siegel_curve_calculator
         + public_bonds_svensson_curve_calculator
     )
+    factory_curve_data_treatment = curve_data_treatment_pipeline.create_pipeline()
+    factory_curve_evaluation = curve_evaluation_pipeline.create_pipeline()
 
 
     pipelines = {
@@ -108,6 +112,11 @@ def register_pipelines() -> dict[str, Pipeline]:
             public_bonds_nelson_siegel
             + public_bonds_svensson
             + public_bonds_parametric_curve_calculators
+        ),
+        "factory_curve_data_treatment": factory_curve_data_treatment,
+        "factory_curve_evaluation": factory_curve_evaluation,
+        "factory_curve_evaluation_full": (
+            factory_curve_data_treatment + factory_curve_evaluation
         ),
         
     }
