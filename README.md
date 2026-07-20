@@ -10,12 +10,14 @@
 
 O ML-ETTJ26 investiga como metodologias com hipóteses, funções-objetivo e graus
 de flexibilidade distintos se comportam na construção da curva de juros
-brasileira. O estudo utiliza dados observados no mercado secundário de títulos
-públicos, disponibilizados pelo Departamento de Operações do Mercado Aberto
-(DEMAB/BCB), e referências de mercado da B3. Séries macroeconômicas do Sistema
-Gerenciador de Séries Temporais (SGS/BCB) complementam o ambiente analítico.
+brasileira. Para isso, o estudo parte de dados observados no mercado
+secundário de títulos públicos, disponibilizados pelo Departamento de
+Operações do Mercado Aberto (DEMAB/BCB), complementados por referências de
+mercado da B3 e por séries macroeconômicas do Sistema Gerenciador de Séries
+Temporais (SGS/BCB), que compõem o ambiente analítico em que os modelos são
+comparados.
 
-A principal motivação acadêmica veio de:
+A motivação acadêmica do projeto tem duas origens principais:
 
 - **Filipović, Pelger e Ye**, em
   [*Stripping the Discount Curve — a Robust Machine Learning Approach*](https://doi.org/10.2139/ssrn.4058150),
@@ -24,16 +26,18 @@ A principal motivação acadêmica veio de:
 - **Luis Giovanni Faria**, em
   [*Aprendendo a curva de juros brasileira*](https://periodicos.fgv.br/rbfin/article/download/89588/85436/203839),
   que aplica e discute essas ideias no contexto dos títulos públicos federais
-  brasileiros e confronta Kernel Ridge Regression e Svensson.
+  brasileiros, confrontando Kernel Ridge Regression e Svensson.
 
-O objetivo deste repositório é reproduzir e estender aspectos desses resultados
-com dados reais, rastreáveis e submetidos a um framework comum de tratamento,
-estimação e avaliação. A proposta, entretanto, **não é eleger um modelo
-universalmente superior para estimar a ETTJ**. O experimento compara
-metodologias em um recorte específico — a curva nominal construída com LTN e
-NTN-F — e procura evidenciar que cada abordagem resolve um problema diferente.
-Qualidade de ajuste, interpretabilidade, suavidade, estabilidade temporal,
-reprecificação e consistência econômica não são objetivos equivalentes.
+A partir dessas referências, o objetivo do repositório passou a ser reproduzir
+e estender esses resultados com dados reais, rastreáveis e submetidos a um
+framework comum de tratamento, estimação e avaliação. Vale deixar claro,
+porém, o que o experimento **não** se propõe a fazer: eleger um modelo
+universalmente superior para estimar a ETTJ. A comparação é feita em um
+recorte específico — a curva nominal construída com LTN e NTN-F — e o que se
+busca evidenciar é que cada abordagem resolve um problema diferente. Qualidade
+de ajuste, interpretabilidade, suavidade, estabilidade temporal, reprecificação
+e consistência econômica não são objetivos equivalentes entre si, e um modelo
+que se destaca em um desses critérios frequentemente cede espaço em outro.
 
 ## Metodologias comparadas
 
@@ -45,7 +49,9 @@ P_i = \sum_{j=1}^{m_i} C_{ij}g(T_{ij}) + \varepsilon_i.
 $$
 
 Esse problema inverso admite soluções diferentes conforme as restrições
-impostas a \(g\), a representação da curva e a função de perda escolhida.
+impostas a \(g\), a representação escolhida para a curva e a função de perda
+utilizada na estimação. As quatro abordagens comparadas neste projeto ocupam
+pontos distintos desse espaço de escolhas:
 
 | Metodologia | Papel no estudo | Característica central |
 |---|---|---|
@@ -79,11 +85,11 @@ y_{SV}(T)=
 +\beta_3L_2(T,\lambda_2).
 $$
 
-No projeto, os parâmetros de decaimento são procurados por Differential
-Evolution em escala logarítmica; condicionados aos \(\lambda\), os
-coeficientes \(\beta\) são estimados por Weighted Least Squares. Os pesos
-baseados no quadrado da duração modificada aproximam, em primeira ordem, uma
-penalização de erro relativo de preço:
+Na implementação, os parâmetros de decaimento \(\lambda\) são buscados por
+Differential Evolution em escala logarítmica. Uma vez fixados esses valores,
+os coeficientes \(\beta\) são estimados por Weighted Least Squares, com pesos
+baseados no quadrado da duração modificada — uma escolha que aproxima, em
+primeira ordem, uma penalização de erro relativo de preço:
 
 $$
 \frac{\Delta P_i}{P_i}\approx-D_i^{mod}\Delta y_i
@@ -91,10 +97,10 @@ $$
 w_i=(D_i^{mod})^2.
 $$
 
-Trata-se, nesta implementação, de um ajuste de YTM por duração, e não de um
-bootstrap exato de cada fluxo de caixa. Essa distinção é deliberadamente
-mantida nos resultados para evitar comparar objetos econômicos como se fossem
-idênticos.
+Vale destacar que, nesta implementação, trata-se de um ajuste de YTM por
+duração, e não de um bootstrap exato de cada fluxo de caixa. Essa distinção é
+deliberadamente mantida ao longo dos resultados, para evitar comparar objetos
+econômicos como se fossem idênticos.
 
 ### Kernel Ridge Regression
 
@@ -113,10 +119,11 @@ $$
 
 Os hiperparâmetros que controlam o kernel e a regularização são selecionados
 por Leave-One-Out Cross-Validation (LOOCV) em uma janela anterior ao início da
-amostra produtiva. A separação temporal é validada pelo pipeline para impedir
-*data leakage*. Diferentemente dos modelos paramétricos, essa abordagem estima
-a função desconto diretamente a partir dos preços e dos fluxos de caixa, sem
-restringi-la a uma combinação fixa de fatores exponenciais.
+amostra produtiva, e essa separação temporal é validada pelo próprio pipeline
+para impedir *data leakage*. A diferença conceitual em relação aos modelos
+paramétricos está em como a função desconto é obtida: aqui ela é estimada
+diretamente a partir dos preços e dos fluxos de caixa, sem restringi-la a uma
+combinação fixa de fatores exponenciais.
 
 Mais detalhes sobre cada implementação estão em
 [`factory_curve`](src/factory_curve/README.md),
@@ -127,15 +134,17 @@ Mais detalhes sobre cada implementação estão em
 ## Da pesquisa à plataforma de dados
 
 O projeto começou como uma tentativa de reproduzir resultados empíricos da
-literatura. A obtenção de uma amostra comparável, porém, exigiu implementar
-muito mais do que os estimadores. Arquivos de diferentes épocas possuem
-layouts, encodings e granularidades distintos; títulos com cupom exigem
-calendários, convenções e cronogramas próprios; e um teste fora da amostra
-demanda referências de outro segmento de mercado.
+literatura, mas a obtenção de uma amostra comparável acabou exigindo muito
+mais do que a implementação dos estimadores em si. Arquivos de diferentes
+épocas possuem layouts, encodings e granularidades distintos; títulos com
+cupom exigem calendários, convenções e cronogramas próprios; e um teste fora
+da amostra demanda referências de outro segmento de mercado. Cada uma dessas
+exigências, isoladamente pequena, foi somando complexidade até que o
+repositório deixasse de ser apenas um conjunto de modelos.
 
-Essa evolução transformou o repositório em um **monólito de pesquisa
-estruturado**, utilizado também como laboratório para práticas de engenharia de
-dados e software financeiro:
+Essa evolução transformou o projeto em um **monólito de pesquisa
+estruturado**, que hoje funciona também como laboratório para práticas de
+engenharia de dados e software financeiro:
 
 - ingestão de APIs públicas, como SGS/BCB, e de arquivos públicos do DEMAB;
 - aquisição e parsing de relatórios de pregão e derivativos da B3;
@@ -177,14 +186,16 @@ Fontes públicas
                               modelos ──► curvas ──► avaliação
 ```
 
-A orquestração é feita pelo Kedro. A camada `trusted` preserva proveniência e
-contratos próximos à fonte; a `refined` harmoniza tipos, unidades e regras de
-negócio; e os marts produzem uma amostra diária comum para as metodologias.
+Todo esse fluxo é orquestrado pelo Kedro. A camada `trusted` preserva
+proveniência e contratos próximos à fonte; a `refined` harmoniza tipos,
+unidades e regras de negócio; e os marts, ao final, produzem uma amostra
+diária comum que alimenta igualmente as quatro metodologias.
 
 ## Engine de produtos e fluxos de caixa
 
-Uma das extensões não previstas no escopo inicial foi a construção de uma
-engine própria para instrumentos de renda fixa. Ela encapsula:
+Uma das extensões não previstas no escopo inicial do projeto foi a construção
+de uma engine própria para instrumentos de renda fixa, hoje responsável por
+encapsular:
 
 - calendário brasileiro e convenção BU/252;
 - regras de ajuste de datas e construção de cronogramas;
@@ -194,15 +205,15 @@ engine própria para instrumentos de renda fixa. Ela encapsula:
 - cálculo de preço, YTM, duração e convexidade;
 - solução de YTM em lote e cenários de fluxo.
 
-Essa camada foi necessária para que o Kernel Ridge operasse sobre preços e
-fluxos economicamente consistentes, e para que as métricas de reprecificação
-fossem comparáveis entre modelos.
+Essa camada se tornou necessária para que o Kernel Ridge operasse sobre preços
+e fluxos economicamente consistentes, e para que as métricas de reprecificação
+fossem de fato comparáveis entre os modelos.
 
 ## Framework de avaliação
 
 Todas as metodologias são convertidas para uma grade diária comum de 1 a 5.040
-dias úteis (20 anos em BU/252). O framework utiliza contratos de interface
-comuns e calculadores independentes para produzir:
+dias úteis (20 anos em BU/252). Sobre essa grade, o framework utiliza
+contratos de interface comuns e calculadores independentes para produzir:
 
 1. **ajuste em taxa** — erros ponto a ponto, RMSE, MAE, viés e erro máximo;
 2. **reprecificação** — erro de preço dentro da amostra de LTN e fora da
@@ -214,16 +225,20 @@ comuns e calculadores independentes para produzir:
 5. **rolldown** — comparação entre a realização em \(D+1\), a previsão direta
    da curva em \(D\) e aproximações por delta/convexidade.
 
-O propósito é avaliar dimensões complementares. Um modelo pode minimizar erro
-de reprecificação e, simultaneamente, gerar dinâmica instável; outro pode
-produzir fatores interpretáveis e uma curva suave, mas não capturar
-irregularidades locais. Esses resultados não constituem uma ordenação absoluta
-das metodologias.
+O propósito dessas cinco frentes é avaliar dimensões complementares, e não
+produzir um único placar. Um modelo pode minimizar erro de reprecificação e,
+simultaneamente, gerar dinâmica instável; outro pode produzir fatores
+interpretáveis e uma curva suave, mas não capturar irregularidades locais.
+Por isso, os resultados não constituem uma ordenação absoluta das
+metodologias — apenas um retrato mais completo de onde cada uma se destaca e
+onde cada uma cede.
 
-Além das métricas empíricas, a suíte automatizada cobre ingestão, parsing,
-linhagem, qualidade dos marts, calendários, cronogramas, fluxos de caixa,
-precificação, solvers, estabilidade numérica, contratos Kedro, prevenção de
-*data leakage*, serialização, batching e fórmulas de cada modelo.
+Essa mesma preocupação com rigor se estende à camada de testes: além das
+métricas empíricas, a suíte automatizada cobre toda a cadeia de dados —
+ingestão, parsing, linhagem e qualidade dos marts — assim como calendários,
+cronogramas, fluxos de caixa e precificação. Do lado numérico, cobre ainda
+solvers, estabilidade, contratos Kedro, prevenção de *data leakage*,
+serialização, batching e as fórmulas de cada modelo.
 
 ```powershell
 uv run pytest
@@ -294,21 +309,22 @@ uv run kedro run --pipeline factory_curve_evaluation_full
 ```
 
 As rotinas dependem da disponibilidade local dos arquivos públicos de origem e
-dos parâmetros definidos em [`conf/base`](conf/base). Backfills completos
-podem ser computacionalmente intensivos, especialmente no tuning do Kernel
-Ridge e na otimização diária do Svensson.
+dos parâmetros definidos em [`conf/base`](conf/base). Vale um alerta prático:
+backfills completos podem ser computacionalmente intensivos.
 
 ## Limitações e estado atual
 
-Este é um projeto em andamento. A amplitude do problema exigiu implementações
-adicionais ao plano original — em especial a engine de fluxos de caixa, a
-normalização histórica das fontes, os mecanismos de processamento em lote e o
-framework de avaliação. Por isso, resultados e contratos ainda podem evoluir.
+Este é, deliberadamente, um projeto em andamento. A amplitude do problema
+exigiu implementações que não estavam no plano original — em especial a
+engine de fluxos de caixa, a normalização histórica das fontes, os mecanismos
+de processamento em lote e o próprio framework de avaliação. Por isso,
+resultados e contratos ainda podem evoluir.
 
 O recorte corrente concentra-se na curva nominal soberana e em títulos
 prefixados. Diferenças de liquidez, microestrutura, tributação, horários de
-marcação e basis entre mercados não desaparecem pelo uso de uma grade comum e
-devem ser consideradas na interpretação dos testes fora da amostra.
+marcação e basis entre mercados não desaparecem pelo simples uso de uma grade
+comum, e devem ser levadas em conta na interpretação dos testes fora da
+amostra.
 
 ## Próximos passos
 
