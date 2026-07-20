@@ -26,6 +26,10 @@ from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_batch a
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_dimension_batch as public_bonds_mart_dimension_batch_pipeline
 from ml_ettj26.pipelines.curve_factory.public_bonds_cashflows import pipeline as public_bonds_cashflows_pipeline
 from factory_curve.bootstrapping import pipeline as bootstrapping_pipeline
+from factory_curve.nelson_siegel import pipeline as nelson_siegel_pipeline
+from factory_curve.nelson_siegel import calculator_pipeline as nelson_siegel_calculator_pipeline
+from factory_curve.svensson import pipeline as svensson_pipeline
+from factory_curve.svensson import calculator_pipeline as svensson_calculator_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
@@ -48,6 +52,18 @@ def register_pipelines() -> dict[str, Pipeline]:
     public_bonds_mart_dimension_batch = public_bonds_mart_dimension_batch_pipeline.create_pipeline()
     public_bonds_cashflows = public_bonds_cashflows_pipeline.create_pipeline()
     public_bonds_bootstrapping = bootstrapping_pipeline.create_pipeline()
+    public_bonds_nelson_siegel = nelson_siegel_pipeline.create_pipeline()
+    public_bonds_svensson = svensson_pipeline.create_pipeline()
+    public_bonds_nelson_siegel_curve_calculator = (
+        nelson_siegel_calculator_pipeline.create_pipeline()
+    )
+    public_bonds_svensson_curve_calculator = (
+        svensson_calculator_pipeline.create_pipeline()
+    )
+    public_bonds_parametric_curve_calculators = (
+        public_bonds_nelson_siegel_curve_calculator
+        + public_bonds_svensson_curve_calculator
+    )
 
 
     pipelines = {
@@ -71,6 +87,25 @@ def register_pipelines() -> dict[str, Pipeline]:
         "public_bonds_mart_batch": public_bonds_mart_batch,
         "public_bonds_mart_dimension_batch": public_bonds_mart_dimension_batch,
         "public_bonds_bootstrapping": public_bonds_bootstrapping,
+        "public_bonds_nelson_siegel": public_bonds_nelson_siegel,
+        "public_bonds_svensson": public_bonds_svensson,
+        "public_bonds_parametric_curves": (
+            public_bonds_nelson_siegel + public_bonds_svensson
+        ),
+        "public_bonds_nelson_siegel_curve_calculator": (
+            public_bonds_nelson_siegel_curve_calculator
+        ),
+        "public_bonds_svensson_curve_calculator": (
+            public_bonds_svensson_curve_calculator
+        ),
+        "public_bonds_parametric_curve_calculators": (
+            public_bonds_parametric_curve_calculators
+        ),
+        "public_bonds_parametric_curves_full": (
+            public_bonds_nelson_siegel
+            + public_bonds_svensson
+            + public_bonds_parametric_curve_calculators
+        ),
         
     }
 

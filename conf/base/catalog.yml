@@ -193,3 +193,71 @@ public_bonds_flat_forward_curves:
     compression: zstd
   load_args:
     engine: pyarrow
+
+public_bonds_nelson_siegel_models:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/06_models/factory_curve/nelson_siegel
+  dataset:
+    type: pickle.PickleDataset
+    backend: pickle
+  filename_suffix: ".pkl"
+  overwrite: true
+
+public_bonds_svensson_models:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/06_models/factory_curve/svensson
+  dataset:
+    type: pickle.PickleDataset
+    backend: pickle
+  filename_suffix: ".pkl"
+  overwrite: true
+
+public_bonds_nelson_siegel_parameter_dimension:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/nelson_siegel/parameter_dimension.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_nelson_siegel_curves:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/07_model_output/factory_curve/nelson_siegel/curves
+  dataset:
+    type: pandas.ParquetDataset
+    save_args:
+      index: false
+      engine: pyarrow
+      compression: zstd
+    load_args:
+      engine: pyarrow
+  filename_suffix: ".parquet"
+  overwrite: true
+  save_lazily: true
+
+public_bonds_svensson_parameter_dimension:
+  type: pandas.ParquetDataset
+  filepath: data/07_model_output/factory_curve/svensson/parameter_dimension.parquet
+  save_args:
+    index: false
+    engine: pyarrow
+    compression: zstd
+  load_args:
+    engine: pyarrow
+
+public_bonds_svensson_curves:
+  type: kedro_datasets.partitions.partitioned_dataset.PartitionedDataset
+  path: data/07_model_output/factory_curve/svensson/curves
+  dataset:
+    type: pandas.ParquetDataset
+    save_args:
+      index: false
+      engine: pyarrow
+      compression: zstd
+    load_args:
+      engine: pyarrow
+  filename_suffix: ".parquet"
+  overwrite: true
+  save_lazily: true

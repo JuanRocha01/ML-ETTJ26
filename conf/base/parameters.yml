@@ -93,3 +93,76 @@ bootstrapping:
     - LTN
     - NTN-F
   batch_size: 64
+
+nelson_siegel:
+  start_date: "2020-01-01"
+  instrument_types:
+    - LTN
+    - NTN-F
+  tenor_column: macaulay_duration
+  rate_column: market_ytm
+  modified_duration_column: modified_duration
+  min_observations: 4
+  # Dmod^2 makes squared yield errors equivalent to relative-price errors.
+  modified_duration_weight_power: 2.0
+  final_cov_type: HC3
+  show_progress: true
+  condition_number_limit: 1.0e10
+  invalid_objective_penalty: 1.0e12
+  de:
+    # Curvature peak ~= 1.793 / lambda; these bounds allow peaks at 0.5-10y.
+    lambda_bounds:
+      - [0.1793, 3.5866]
+    strategy: best1bin
+    init: sobol
+    popsize: 16
+    maxiter: 60
+    mutation: [0.5, 1.0]
+    recombination: 0.7
+    tol: 1.0e-6
+    atol: 0.0
+    polish: true
+    seed: 42
+    workers: 1
+    updating: immediate
+
+svensson:
+  start_date: "2020-01-01"
+  instrument_types:
+    - LTN
+    - NTN-F
+  tenor_column: macaulay_duration
+  rate_column: market_ytm
+  modified_duration_column: modified_duration
+  min_observations: 5
+  modified_duration_weight_power: 2.0
+  final_cov_type: HC3
+  show_progress: true
+  condition_number_limit: 1.0e10
+  invalid_objective_penalty: 1.0e12
+  # Keeps curvature factor identities stable and avoids near-collinearity.
+  min_lambda_ratio: 1.2
+  de:
+    # lambda_1 peak: 0.5-5y; lambda_2 peak: 6-15y.
+    lambda_bounds:
+      - [0.3587, 3.5866]
+      - [0.1196, 0.2989]
+    strategy: best1bin
+    init: sobol
+    popsize: 16
+    maxiter: 150
+    mutation: [0.5, 1.0]
+    recombination: 0.7
+    tol: 1.0e-6
+    atol: 0.0
+    polish: true
+    seed: 42
+    workers: 1
+    updating: immediate
+
+parametric_curve_calculator:
+  max_years: 20
+  business_days_per_year: 252
+  # Each lazy Parquet partition contains this many reference dates.
+  model_batch_size: 32
+  show_progress: true

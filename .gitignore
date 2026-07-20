@@ -49,6 +49,14 @@ data/**
 
 # Se você usa .gitkeep para manter estrutura:
 !data/**/.gitkeep
+!data/06_models/
+!data/06_models/factory_curve/
+!data/06_models/factory_curve/nelson_siegel/
+!data/06_models/factory_curve/svensson/
+!data/07_model_output/
+!data/07_model_output/factory_curve/
+!data/07_model_output/factory_curve/nelson_siegel/
+!data/07_model_output/factory_curve/svensson/
 
 # Outputs típicos
 logs/
