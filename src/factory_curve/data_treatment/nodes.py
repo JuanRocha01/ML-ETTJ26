@@ -115,17 +115,17 @@ def format_partitioned_curves(
 
 
 def data_treatment(
-    bootstrapping_curves: pd.DataFrame,
+    flat_forward_curves: pd.DataFrame,
     nelson_siegel_curves: Mapping[str, CurvePartition],
     svensson_curves: Mapping[str, CurvePartition],
     kernel_ridge_curves: Mapping[str, CurvePartition],
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, bool]:
     """Create one wide, test-ready DataFrame for each curve methodology."""
 
-    bootstrapping = _validate_and_pivot_curve(
-        bootstrapping_curves,
+    flat_forward = _validate_and_pivot_curve(
+        flat_forward_curves,
         rate_column="zero_rate",
-        source_name="bootstrapping",
+        source_name="flat_forward",
     )
     nelson_siegel = format_partitioned_curves(
         nelson_siegel_curves,
@@ -139,7 +139,7 @@ def data_treatment(
         kernel_ridge_curves,
         source_name="kernel_ridge",
     )
-    return bootstrapping, nelson_siegel, svensson, kernel_ridge, True
+    return flat_forward, nelson_siegel, svensson, kernel_ridge, True
 
 
 def register_curve_duckdb_views(

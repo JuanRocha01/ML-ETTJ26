@@ -23,4 +23,3 @@ def build_public_bonds_flat_forward_curves(
         instrument_types=parameters.get("instrument_types", ("LTN", "NTN-F")),
         batch_size=int(parameters.get("batch_size", 64)),
     )
-

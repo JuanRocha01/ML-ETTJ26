@@ -11,7 +11,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=data_treatment,
                 inputs={
-                    "bootstrapping_curves": (
+                    "flat_forward_curves": (
                         "public_bonds_flat_forward_curves"
                     ),
                     "nelson_siegel_curves": (
@@ -21,7 +21,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "kernel_ridge_curves": "public_bonds_krr_curves",
                 },
                 outputs=[
-                    "factory_curve_bootstrapping_daily",
+                    "factory_curve_flat_forward_daily",
                     "factory_curve_nelson_siegel_daily",
                     "factory_curve_svensson_daily",
                     "factory_curve_kernel_ridge_daily",

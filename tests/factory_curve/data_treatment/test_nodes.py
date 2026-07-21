@@ -41,7 +41,7 @@ def test_data_treatment_pivots_all_methodologies_and_loads_batches() -> None:
         "batch_00000": _curve_frame(["2020-01-02"]),
     }
     outputs = data_treatment(
-        bootstrapping_curves=_curve_frame(
+        flat_forward_curves=_curve_frame(
             ["2020-01-02", "2020-01-03"],
             rate_column="zero_rate",
         ),

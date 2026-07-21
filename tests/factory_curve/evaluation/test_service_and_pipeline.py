@@ -58,7 +58,7 @@ def test_pipeline_contract() -> None:
     assert len(evaluation_pipeline.nodes) == 1
     assert evaluation_pipeline.nodes[0].name == "evaluate_curve_methodologies"
     assert {
-        "factory_curve_bootstrapping_daily",
+        "factory_curve_flat_forward_daily",
         "factory_curve_nelson_siegel_daily",
         "factory_curve_svensson_daily",
         "factory_curve_kernel_ridge_daily",

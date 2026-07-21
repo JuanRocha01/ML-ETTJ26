@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from factory_curve.bootstrapping.interpolation import (
+from factory_curve.flat_forward.interpolation import (
     FlatForwardConfig,
     FlatForwardInterpolator,
     PublicBondCurveBatchBuilder,

@@ -24,7 +24,7 @@ OUTPUT_KEYS = (
 
 
 def evaluate_curve_methodologies(
-    bootstrapping_curve: pd.DataFrame,
+    flat_forward_curve: pd.DataFrame,
     nelson_siegel_curve: pd.DataFrame,
     svensson_curve: pd.DataFrame,
     kernel_ridge_curve: pd.DataFrame,
@@ -38,7 +38,7 @@ def evaluate_curve_methodologies(
     service = CurveEvaluationService()
     results = service.evaluate(
         {
-            "bootstrapping": bootstrapping_curve,
+            "flat_forward": flat_forward_curve,
             "nelson_siegel": nelson_siegel_curve,
             "svensson": svensson_curve,
             "kernel_ridge": kernel_ridge_curve,

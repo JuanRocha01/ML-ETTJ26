@@ -1,7 +1,9 @@
-# Public-bond flat-forward bootstrapping
+# Public-bond flat-forward interpolation
 
 This package builds one nominal term structure per `ref_date` from LTN and
-NTN-F observations.
+NTN-F observations. It interpolates approximate discount factors inferred
+from observed YTMs; it does not bootstrap cash flows or strip an exact zero
+curve.
 
 ## Method
 
@@ -26,7 +28,7 @@ rates. `tenor_bd` ranges from 1 to 5,040.
 Run:
 
 ```powershell
-kedro run --pipeline public_bonds_bootstrapping
+kedro run --pipeline public_bonds_flat_forward
 ```
 
 Input:
@@ -42,5 +44,4 @@ data/curves/public_bonds_flat_forward_curves.parquet
 ```
 
 The start date, horizon, BU convention, instruments, and calculation batch
-size are configured under `bootstrapping` in `conf/base/parameters.yml`.
-
+size are configured under `flat_forward` in `conf/base/parameters.yml`.

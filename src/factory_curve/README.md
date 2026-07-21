@@ -11,7 +11,7 @@ Somente observações com `ref_date >= 2020-01-01` e instrumentos `LTN` ou
 `NTN-F` são consideradas. A data inicial e os instrumentos são configuráveis
 em `conf/base/parameters.yml`.
 
-Para manter consistência com o bootstrapping já existente, o prazo \(T\) é a
+Para manter consistência com a interpolação flat-forward já existente, o prazo \(T\) é a
 `macaulay_duration`, expressa em anos BU/252. A variável dependente é
 `market_ytm`, em taxa efetiva anual decimal. Taxa, duração e duração modificada
 devem ser finitas e economicamente válidas. O PU não participa mais da

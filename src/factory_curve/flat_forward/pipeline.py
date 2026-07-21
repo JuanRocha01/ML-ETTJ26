@@ -14,11 +14,10 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "curve_inputs": (
                         "mart_public_bonds_curve_inputs_dimension_batch"
                     ),
-                    "parameters": "params:bootstrapping",
+                    "parameters": "params:flat_forward",
                 },
                 outputs="public_bonds_flat_forward_curves",
                 name="build_public_bonds_flat_forward_curves",
             )
         ]
     )
-

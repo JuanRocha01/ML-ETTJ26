@@ -1,4 +1,4 @@
-"""Flat-forward bootstrapping for Brazilian public-bond curves."""
+"""Flat-forward interpolation for Brazilian public-bond curves."""
 
 from .interpolation import (
     FlatForwardConfig,
@@ -15,4 +15,3 @@ __all__ = [
     "interpolate_flat_forward",
     "interpolate_flat_forward_batch",
 ]
-

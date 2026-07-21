@@ -55,7 +55,7 @@ pontos distintos desse espaço de escolhas:
 
 | Metodologia | Papel no estudo | Característica central |
 |---|---|---|
-| **Bootstrapping flat-forward** | baseline transparente | Converte taxas observadas em fatores de desconto aproximados e interpola linearmente \(\log g(T)\), o que implica forwards constantes por segmento. |
+| **Interpolação flat-forward** | baseline transparente | Converte taxas observadas em fatores de desconto aproximados e interpola linearmente \(\log g(T)\), o que implica forwards constantes por segmento. Não realiza bootstrap dos fluxos de caixa. |
 | **Nelson–Siegel** | benchmark paramétrico parcimonioso | Representa nível, inclinação e uma curvatura com poucos parâmetros e elevada interpretabilidade econômica. |
 | **Svensson** | benchmark paramétrico flexível | Acrescenta uma segunda curvatura ao Nelson–Siegel; é a família funcional empregada pela ANBIMA em sua metodologia de ETTJ. |
 | **Kernel Ridge Regression** | estimador não paramétrico inspirado em Filipović–Pelger–Ye | Aprende diretamente a função desconto no espaço funcional definido pelo kernel, conciliando aderência aos preços e regularização de suavidade. |
@@ -128,7 +128,7 @@ combinação fixa de fatores exponenciais.
 Mais detalhes sobre cada implementação estão em
 [`factory_curve`](src/factory_curve/README.md),
 [`kernel_ridge`](src/factory_curve/kernel_ridge/README.md),
-[`bootstrapping`](src/factory_curve/bootstrapping/README.md) e
+[`flat_forward`](src/factory_curve/flat_forward/README.md) e
 [`evaluation`](src/factory_curve/evaluation/README.md).
 
 ## Da pesquisa à plataforma de dados
@@ -300,7 +300,7 @@ uv run kedro run --pipeline public_bonds_cashflows
 uv run kedro run --pipeline public_bonds_mart_dimension_batch
 
 # Estimação das curvas
-uv run kedro run --pipeline public_bonds_bootstrapping
+uv run kedro run --pipeline public_bonds_flat_forward
 uv run kedro run --pipeline public_bonds_kernel_ridge
 uv run kedro run --pipeline public_bonds_parametric_curves_full
 

@@ -1,6 +1,6 @@
 # Avaliação das metodologias de curva
 
-O módulo `factory_curve.evaluation` compara `bootstrapping`,
+O módulo `factory_curve.evaluation` compara `flat_forward`,
 `nelson_siegel`, `svensson` e `kernel_ridge` usando a mesma grade BU/252 e
 os mesmos dados de mercado. Cada família de métricas implementa o protocolo
 `MetricCalculator`; o `CurveEvaluationService` apenas injeta os dados,

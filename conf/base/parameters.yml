@@ -76,7 +76,7 @@ duckdb:
 
 factory_curve_data_treatment:
   views:
-    vw_factory_curve_bootstrapping_daily: data/07_model_output/factory_curve/data_treatment/bootstrapping_daily.parquet
+    vw_factory_curve_flat_forward_daily: data/07_model_output/factory_curve/data_treatment/flat_forward_daily.parquet
     vw_factory_curve_nelson_siegel_daily: data/07_model_output/factory_curve/data_treatment/nelson_siegel_daily.parquet
     vw_factory_curve_svensson_daily: data/07_model_output/factory_curve/data_treatment/svensson_daily.parquet
     vw_factory_curve_kernel_ridge_daily: data/07_model_output/factory_curve/data_treatment/kernel_ridge_daily.parquet
@@ -112,7 +112,7 @@ public_bonds_cashflow_dimension:
     - sql/03_refined/bcb_demab.sql
   parquet_path: data/04_feature/curve_factory/public_bonds/mart_public_bonds_cashflow_dimension.parquet
 
-bootstrapping:
+flat_forward:
   start_date: "2020-01-01"
   max_years: 20
   business_days_per_year: 252

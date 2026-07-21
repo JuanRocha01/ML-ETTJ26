@@ -12,3 +12,4 @@ def test_pipeline_contract() -> None:
     assert "public_bonds_nelson_siegel_curves" in curve_pipeline.inputs()
     assert "public_bonds_svensson_curves" in curve_pipeline.inputs()
     assert "public_bonds_krr_curves" in curve_pipeline.inputs()
+    assert "factory_curve_flat_forward_daily" in curve_pipeline.outputs()

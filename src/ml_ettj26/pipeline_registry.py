@@ -25,7 +25,7 @@ from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline as publ
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_batch as public_bonds_mart_batch_pipeline
 from ml_ettj26.pipelines.curve_factory.public_bonds_mart import pipeline_dimension_batch as public_bonds_mart_dimension_batch_pipeline
 from ml_ettj26.pipelines.curve_factory.public_bonds_cashflows import pipeline as public_bonds_cashflows_pipeline
-from factory_curve.bootstrapping import pipeline as bootstrapping_pipeline
+from factory_curve.flat_forward import pipeline as flat_forward_pipeline
 from factory_curve.kernel_ridge import pipeline as kernel_ridge_pipeline
 from factory_curve.nelson_siegel import pipeline as nelson_siegel_pipeline
 from factory_curve.nelson_siegel import calculator_pipeline as nelson_siegel_calculator_pipeline
@@ -54,7 +54,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     public_bonds_mart_batch = public_bonds_mart_batch_pipeline.create_pipeline()
     public_bonds_mart_dimension_batch = public_bonds_mart_dimension_batch_pipeline.create_pipeline()
     public_bonds_cashflows = public_bonds_cashflows_pipeline.create_pipeline()
-    public_bonds_bootstrapping = bootstrapping_pipeline.create_pipeline()
+    public_bonds_flat_forward = flat_forward_pipeline.create_pipeline()
     public_bonds_kernel_ridge = kernel_ridge_pipeline.create_pipeline()
     public_bonds_nelson_siegel = nelson_siegel_pipeline.create_pipeline()
     public_bonds_svensson = svensson_pipeline.create_pipeline()
@@ -92,7 +92,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         "public_bonds_mart": public_bonds_mart,
         "public_bonds_mart_batch": public_bonds_mart_batch,
         "public_bonds_mart_dimension_batch": public_bonds_mart_dimension_batch,
-        "public_bonds_bootstrapping": public_bonds_bootstrapping,
+        "public_bonds_flat_forward": public_bonds_flat_forward,
         "public_bonds_kernel_ridge": public_bonds_kernel_ridge,
         "public_bonds_nelson_siegel": public_bonds_nelson_siegel,
         "public_bonds_svensson": public_bonds_svensson,
