@@ -36,6 +36,10 @@ def test_cashflow_schedule_lookup_filters_cashflows_by_as_of_bd_index():
 
     assert pairs == ((204 / 252.0, 1000.0),)
 
+    tenor_bd, amounts = lookup["ABC"].future_arrays_as_of(ref_bd_index=300)
+    assert tenor_bd.tolist() == [204]
+    assert amounts.tolist() == [1000.0]
+
 
 def test_price_and_duration_from_time_amount_pairs():
     pairs = ((1.0, 50.0), (2.0, 1050.0))

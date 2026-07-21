@@ -19,4 +19,7 @@ def test_registry_uses_flat_forward_pipeline_name() -> None:
     pipelines = register_pipelines()
 
     assert "public_bonds_flat_forward" in pipelines
-    assert "public_bonds_bootstrapping" not in pipelines
+    assert "public_bonds_bootstrapping" in pipelines
+    assert pipelines["public_bonds_flat_forward"] is not pipelines[
+        "public_bonds_bootstrapping"
+    ]

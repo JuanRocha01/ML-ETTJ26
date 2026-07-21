@@ -25,6 +25,7 @@ OUTPUT_KEYS = (
 
 def evaluate_curve_methodologies(
     flat_forward_curve: pd.DataFrame,
+    bootstrapping_curve: pd.DataFrame,
     nelson_siegel_curve: pd.DataFrame,
     svensson_curve: pd.DataFrame,
     kernel_ridge_curve: pd.DataFrame,
@@ -33,12 +34,13 @@ def evaluate_curve_methodologies(
     calendar: pd.DataFrame,
     parameters: dict[str, Any],
 ) -> tuple[pd.DataFrame, ...]:
-    """Run every configured metric for all four curve methodologies."""
+    """Run every configured metric for all curve methodologies."""
 
     service = CurveEvaluationService()
     results = service.evaluate(
         {
             "flat_forward": flat_forward_curve,
+            "bootstrapping": bootstrapping_curve,
             "nelson_siegel": nelson_siegel_curve,
             "svensson": svensson_curve,
             "kernel_ridge": kernel_ridge_curve,

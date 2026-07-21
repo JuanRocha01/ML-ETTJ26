@@ -77,6 +77,7 @@ duckdb:
 factory_curve_data_treatment:
   views:
     vw_factory_curve_flat_forward_daily: data/07_model_output/factory_curve/data_treatment/flat_forward_daily.parquet
+    vw_factory_curve_bootstrapping_daily: data/07_model_output/factory_curve/data_treatment/bootstrapping_daily.parquet
     vw_factory_curve_nelson_siegel_daily: data/07_model_output/factory_curve/data_treatment/nelson_siegel_daily.parquet
     vw_factory_curve_svensson_daily: data/07_model_output/factory_curve/data_treatment/svensson_daily.parquet
     vw_factory_curve_kernel_ridge_daily: data/07_model_output/factory_curve/data_treatment/kernel_ridge_daily.parquet
@@ -120,6 +121,21 @@ flat_forward:
     - LTN
     - NTN-F
   batch_size: 64
+
+bootstrapping:
+  # True cashflow stripping starts at the beginning of the study sample.
+  start_date: "2020-01-01"
+  max_years: 20
+  business_days_per_year: 252
+  instrument_types:
+    - LTN
+    - NTN-F
+  min_maturity_bd: 1
+  min_discount_factor: 1.0e-8
+  max_discount_factor: 2.0
+  root_tolerance: 1.0e-12
+  batch_size: 64
+  show_progress: true
 
 kernel_ridge:
   # The tuning cutoff is exclusive. No observation on or after this date can

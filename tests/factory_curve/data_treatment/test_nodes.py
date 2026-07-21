@@ -45,12 +45,16 @@ def test_data_treatment_pivots_all_methodologies_and_loads_batches() -> None:
             ["2020-01-02", "2020-01-03"],
             rate_column="zero_rate",
         ),
+        bootstrapping_curves=_curve_frame(
+            ["2020-01-02", "2020-01-03"],
+            rate_column="zero_rate",
+        ),
         nelson_siegel_curves=partitions,
         svensson_curves=partitions,
         kernel_ridge_curves=partitions,
     )
 
-    for matrix in outputs[:4]:
+    for matrix in outputs[:5]:
         assert matrix.index.name == "ref_date"
         assert list(matrix.columns) == ["1", "2", "3"]
         assert list(matrix.index) == [
@@ -58,7 +62,7 @@ def test_data_treatment_pivots_all_methodologies_and_loads_batches() -> None:
             pd.Timestamp("2020-01-03"),
         ]
     assert load_count["count"] == 3
-    assert outputs[4] is True
+    assert outputs[5] is True
 
 
 def test_partitioned_curves_reject_different_business_day_grids() -> None:

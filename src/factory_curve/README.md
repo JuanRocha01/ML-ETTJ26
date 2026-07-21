@@ -20,9 +20,10 @@ filtradas antes do agrupamento diário; uma data com observações insuficientes
 falha de forma explícita, evitando modelos silenciosamente incompletos.
 
 Essa é uma curva paramétrica de YTM por duração, não um bootstrap exato dos
-fluxos de caixa. Tratar YTM de títulos com cupom como taxa zero é uma
-aproximação já presente na camada de curvas atual e deve ser reavaliada quando
-a etapa de geração das curvas for implementada.
+fluxos de caixa. Tratar YTM de títulos com cupom como taxa zero continua sendo
+uma aproximação específica das curvas ajustadas em YTM. O pacote
+`factory_curve.bootstrapping` oferece separadamente o stripping por preço e
+pelos fluxos contratuais da engine.
 
 ## Equações
 

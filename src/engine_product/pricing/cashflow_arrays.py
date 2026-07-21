@@ -21,17 +21,28 @@ class CashflowScheduleArrays:
     payment_bd_index: np.ndarray
     amount: np.ndarray
 
+    def future_arrays_as_of(
+        self,
+        ref_bd_index: int,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Return future tenors in business days and their aggregated amounts."""
+
+        mask = self.payment_bd_index > ref_bd_index
+        return (
+            self.payment_bd_index[mask] - int(ref_bd_index),
+            self.amount[mask],
+        )
+
     def time_amount_pairs_as_of(
         self,
         ref_bd_index: int,
     ) -> tuple[tuple[float, float], ...]:
-        mask = self.payment_bd_index > ref_bd_index
+        tenor_bd, amounts = self.future_arrays_as_of(ref_bd_index)
 
-        if not np.any(mask):
+        if tenor_bd.size == 0:
             return tuple()
 
-        times = (self.payment_bd_index[mask] - ref_bd_index) / 252.0
-        amounts = self.amount[mask]
+        times = tenor_bd / 252.0
 
         return tuple(
             (float(t), float(amount))

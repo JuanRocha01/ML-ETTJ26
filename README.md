@@ -50,15 +50,25 @@ $$
 
 Esse problema inverso admite soluções diferentes conforme as restrições
 impostas a \(g\), a representação escolhida para a curva e a função de perda
-utilizada na estimação. As quatro abordagens comparadas neste projeto ocupam
+utilizada na estimação. As cinco abordagens comparadas neste projeto ocupam
 pontos distintos desse espaço de escolhas:
 
 | Metodologia | Papel no estudo | Característica central |
 |---|---|---|
 | **Interpolação flat-forward** | baseline transparente | Converte taxas observadas em fatores de desconto aproximados e interpola linearmente \(\log g(T)\), o que implica forwards constantes por segmento. Não realiza bootstrap dos fluxos de caixa. |
+| **Bootstrapping de fluxos de caixa** | baseline de stripping | Reutiliza os fluxos contratuais da engine e resolve fatores de desconto sequencialmente por vencimento, reprecificando cada instrumento de pilar. |
 | **Nelson–Siegel** | benchmark paramétrico parcimonioso | Representa nível, inclinação e uma curvatura com poucos parâmetros e elevada interpretabilidade econômica. |
 | **Svensson** | benchmark paramétrico flexível | Acrescenta uma segunda curvatura ao Nelson–Siegel; é a família funcional empregada pela ANBIMA em sua metodologia de ETTJ. |
 | **Kernel Ridge Regression** | estimador não paramétrico inspirado em Filipović–Pelger–Ye | Aprende diretamente a função desconto no espaço funcional definido pelo kernel, conciliando aderência aos preços e regularização de suavidade. |
+
+### Bootstrapping de fluxos de caixa
+
+O bootstrap consome preços de mercado, a dimensão estática
+`mart_public_bonds_cashflow_dimension` e os índices de dias úteis do calendário.
+Os contratos e cronogramas são construídos uma única vez pela engine; no
+processamento histórico, cada data apenas seleciona arrays futuros por ISIN.
+Os fatores de desconto são resolvidos em ordem de vencimento. Entre pilares,
+`log(DF)` é linear, inclusive durante a solução dos cupons intermediários.
 
 ### Nelson–Siegel e Svensson
 
@@ -128,7 +138,8 @@ combinação fixa de fatores exponenciais.
 Mais detalhes sobre cada implementação estão em
 [`factory_curve`](src/factory_curve/README.md),
 [`kernel_ridge`](src/factory_curve/kernel_ridge/README.md),
-[`flat_forward`](src/factory_curve/flat_forward/README.md) e
+[`flat_forward`](src/factory_curve/flat_forward/README.md),
+[`bootstrapping`](src/factory_curve/bootstrapping/README.md) e
 [`evaluation`](src/factory_curve/evaluation/README.md).
 
 ## Da pesquisa à plataforma de dados
@@ -189,7 +200,7 @@ Fontes públicas
 Todo esse fluxo é orquestrado pelo Kedro. A camada `trusted` preserva
 proveniência e contratos próximos à fonte; a `refined` harmoniza tipos,
 unidades e regras de negócio; e os marts, ao final, produzem uma amostra
-diária comum que alimenta igualmente as quatro metodologias.
+diária comum que alimenta igualmente as cinco metodologias.
 
 ## Engine de produtos e fluxos de caixa
 
@@ -301,6 +312,7 @@ uv run kedro run --pipeline public_bonds_mart_dimension_batch
 
 # Estimação das curvas
 uv run kedro run --pipeline public_bonds_flat_forward
+uv run kedro run --pipeline public_bonds_bootstrapping
 uv run kedro run --pipeline public_bonds_kernel_ridge
 uv run kedro run --pipeline public_bonds_parametric_curves_full
 

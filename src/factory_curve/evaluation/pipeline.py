@@ -14,6 +14,9 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "flat_forward_curve": (
                         "factory_curve_flat_forward_daily"
                     ),
+                    "bootstrapping_curve": (
+                        "factory_curve_bootstrapping_daily"
+                    ),
                     "nelson_siegel_curve": (
                         "factory_curve_nelson_siegel_daily"
                     ),
